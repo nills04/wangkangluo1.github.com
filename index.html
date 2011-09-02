@@ -1,13 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>�ޱ����ĵ�</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+ <link rel="stylesheet" href="style.css" type="text/css">   
+            <style type="text/css">  
+.center {
+width:960px;                                                                    
+margin:0 auto;
+border:1px solid #333;   
+background-color:#ccc;   
+}
+</style> 
+                  
+    </script>
+    <script type="text/javascript">    
+$(document).ready( function() {
+    $('#container_id').fileTree({ root: '/some/folder/' }, function(file) {
+        alert(file);
+    });
+});
+    </script>
 </head>
 
 <body>
-fuck of
+
+<div class="center">test</div>
 </body>
-
-
 </html>
