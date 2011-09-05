@@ -1,7 +1,7 @@
 ---
 layout: default
-title: wangkangluo1's --
-subtitle: fuckck
+title: wangkangluo1's fuck world
+subtitle: 
 
 links:
   tourguide: http://www.wowinterface.com/downloads/fileinfo.php?id=7674
