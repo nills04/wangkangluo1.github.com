@@ -1,0 +1,59 @@
+---
+layout: default
+title: Tekkub's Emporium of Random Crap
+subtitle: World of Warcraft addons and various ramblings of a furry bastard
+
+links:
+  tourguide: http://www.wowinterface.com/downloads/fileinfo.php?id=7674
+  wowi: http://www.wowinterface.com/downloads/index.php?cid=37
+  github: http://github.com/tekkub
+---
+{% assign first_post = site.posts.first %}
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="/js/delay.js"></script>
+<script type="text/javascript" src="/js/wowi.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+<div class="sidebar">
+
+h3. Quick links
+
+* "WoW Interface [Releases]":{{ page.links.wowi }}
+* "Github repos [Alphas]":{{ page.links.github }}
+* "TourGuide":{{ page.links.tourguide }}
+
+</div>
+
+<div class="sidebar">
+
+h3. Posts !/images/rss.png(Subscribe)!:http://feeds2.feedburner.com/tekkub
+
+{% for post in site.posts %}
+* "{{ post.subtitle }}":{{ post.url }}
+{% endfor %}
+
+</div>
+
+Welcome to my crappy website.  I'm lazy, so you may not see many improvements to this base page.  Anywho, the good shit's below.
+
+For lots more goodies that I haven't put on this site yet, visit "My WoWInterface section":{{ page.links.wowi }}.
+
+You can also find all sorts of little unreleased mods in my "git repos":{{ page.links.github }}.
+
+p(. <i>*Important note:* addons pulled from git are *alpha quality* and are not supported, they could completely screw up your game... but I strive for that not to happen, of course.  USE AT YOUR OWN RISK!</i>
+
+h2. {{ first_post.subtitle }}
+
+<div class="top_post">
+  {% if first_post.thumbnail %}
+    !(thumb){{ first_post.thumbnail }}({{ first_post.thumbnail_alt }})!
+  {% endif %} {{ first_post.content }}
+</div>
+
+h2(clear_all). Addons
+
+<noscript>
+It looks like you have javascript blocked.  I'm afraid my site requires it for the addon list to work.  If you don't trust my code... why the hell are you using my addons?  You're more than welcome to check out "my code":http://github.com/tekkub/tekkub.github.com/blob/master/js/main.js, it's just a bit of jQuery to ensure the addon list is always updated... I forget to regenerate the site every time I add a new addon.
+</noscript>
+
+<table id="addon_list"></table>
