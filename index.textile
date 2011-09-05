@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Tekkub's Emporium of Random Crap
-subtitle: World of Warcraft addons and various ramblings of a furry bastard
+title: wangkangluo1's --
+subtitle: fuckck
 
 links:
   tourguide: http://www.wowinterface.com/downloads/fileinfo.php?id=7674
