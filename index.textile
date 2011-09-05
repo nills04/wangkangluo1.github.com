@@ -5,7 +5,7 @@ subtitle: no words
 
 links:
   bokeyuan: http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx
-  115: http://u.115.com/?ct=index&ac=my#ct=frame
+  wangpan: http://u.115.com/?ct=index&ac=my#ct=frame
   bas: https://github.com/wangkangluo1/bas
   vim: https://github.com/wangkangluo1/vim
   emacs: https://github.com/wangkangluo1/emacs-d
@@ -21,7 +21,7 @@ links:
 h3. Quick links
 
 * "博客园":{{ page.links.bokeyuan }}
-* "网盘":{{ page.links.115 }}
+* "网盘":{{ page.links.wangpan }}
 * "bas":{{ page.links.bas }}
 * "vim":{{ page.links.vim }}
 * "emacs":{{ page.links.emacs }}
