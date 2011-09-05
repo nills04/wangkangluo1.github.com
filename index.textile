@@ -21,7 +21,7 @@ links:
 h3. Quick links
 
 * "博客园":{{ page.links.bokeyuan }}
-* "网盘":{{ page.links.wangpan }}
+* "115网盘":{{ page.links.wangpan }}
 * "bas":{{ page.links.bas }}
 * "vim":{{ page.links.vim }}
 * "emacs":{{ page.links.emacs }}
