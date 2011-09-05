@@ -20,9 +20,11 @@ links:
 
 h3. Quick links
 
-* 博客园:{{ page.links.bokeyuan }}
-* 115:{{ page.links.115 }}
-* ba":{{ page.links.bas }}
+* "博客园":{{ page.links.bokeyuan }}
+* "115":{{ page.links.115 }}
+* "bas":{{ page.links.bas }}
+* "vim":{{ page.links.vim }}
+* "emacs":{{ page.links.emacs }}
 
 </div>
 
