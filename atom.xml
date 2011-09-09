@@ -1,28 +1,27 @@
 ---
 layout: nil
+author: saberma
+email: mahb45@gmail.com
+domain: saberma.me
 ---
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/css" href="/css/rss.css"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-
-  <title>Tekkub's Emporium of Random Crap</title>
-  <link href="http://tekkub.net/atom.xml" rel="self"/>
-  <link href="http://tekkub.net/"/>
+  <title>{{page.author}}的博客</title>
+  <link href="http://{{page.domain}}/atom.xml" rel="self"/>
+  <link href="http://{{page.domain}}/"/>
   <updated>{{ site.time | date_to_xmlschema }}</updated>
-  <id>http://tekkub.net/</id>
+  <id>http://{{page.domain}}/</id>
   <author>
-    <name>Tekkub Stoutwrithe</name>
-    <email>tekkub@gmail.com</email>
+    <name>{{page.author}}</name>
+    <email>{{page.email}}</email>
   </author>
-
   {% for post in site.posts %}
-  <entry>
-    <title>{{ post.subtitle }}</title>
-    <link href="http://tekkub.net{{ post.url }}"/>
-    <updated>{{ post.date | date_to_xmlschema }}</updated>
-    <id>http://tekkub.net{{ post.id }}</id>
-    <content type="html">{{ post.content | xml_escape }}</content>
-  </entry>
+    <entry>
+      <title>{{ post.title }}</title>
+      <link href="http://{{ page.domain }}{{ post.url }}"/>
+      <updated>{{ post.date | date_to_xmlschema }}</updated>
+      <id>http://{{ page.domain }}{{ post.id }}</id>
+      <content type="html">{{ post.content | xml_escape }}</content>
+    </entry>
   {% endfor %}
-
 </feed>
