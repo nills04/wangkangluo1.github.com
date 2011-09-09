@@ -170,7 +170,7 @@ color: #6D9D30;
 /** ARTICLES **/
 #content {
 float: left;
-width: 585px;
+width: 675px;
 margin:10px 0 10px 0;
 padding:5px 20px 5px 20px;
 background-color: #fff;
@@ -209,7 +209,7 @@ margin-bottom: 12px;
 aside {
 float: right;
 text-align: left;
-width: 290px;
+width: 200px;
 margin:0;
 padding:0;
 }
@@ -263,7 +263,6 @@ margin-bottom: 10px;
 
 
 #footer-area {
-/*background: #6D9D30;*/
 background: #7597A5;
 color: #FFF;
 font-size: 90%;
