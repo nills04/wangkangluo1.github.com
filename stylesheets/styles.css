@@ -55,7 +55,9 @@ width: 940px;
 margin: 0 auto;
 padding-top: 10px;
 padding-bottom: 10px;
-background: #9CCB47;
+/*background: #9CCB47;*/
+background-color: #151515;
+
 overflow: hidden;
 }
 
