@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>如何开始rails项目 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          <div class='post'>
+  <h1><a href='/rails/2009/12/29/development-skills.html'>如何开始rails项目</a></h1>
+  <span class='date'>2009-12-29</span>
+  <div class='body'><p>为了能胜任ruby项目的开发工作，你需要逐步掌握以下技能</p>
+<h2>1.安装操作系统(Linux)</h2>
+<p>经过实践，rails项目可以顺利在windows、linux(Ubuntu)、unix(solaris)下运行<br />
+但推荐使用的平台仍是Linux，所以你至少需要熟悉以下内容</p>
+<h3>安装</h3>
+<p>我们开发环境使用的是Ubuntu，安装后请阅读速配指南了解ubuntu的基本配置</p>
+<p><a href="http://wiki.ubuntu.org.cn/articles/i/n/s/Install_Ubuntu_desktop_8.04_a2e3.html">Ubuntu安装</a><br />
+<a href="http://wiki.ubuntu.org.cn/Qref/Hardy">Ubuntu速配指南</a></p>
+<h3>熟悉常用命令</h3>
+<p><a href="http://blog.csdn.net/ckboss/archive/2009/05/03/4144318.asp">Linux常用命令</a><br />
+<a href="/2009/11/23/linux.html">常用命令联合使用</a></p>
+<h3>安装xp虚拟机</h3>
+<p>安装xp虚拟机操作系统是为了使用rtx、使用ie访问项目，具体步骤:</p>
+<p><a href="http://www.virtualbox.org/wiki/Linux_Downloads">安装virtualbox</a><br />
+宿主操作系统为&quot;Ubuntu 8.04 LTS&quot;,按电脑的cpu架构选择i386或者AMD的virtualbox安装包</p>
+<p>在virtualbox安装windowns xp精简版<br />
+<a href="http://www.lupaworld.com/340814/viewspace-139349">ubuntu下安装xp指南</a></p>
+<h2>2.熟悉开发工具(Vim)</h2>
+<p>经过对netbean、RadRails、Vim的使用，最终选择了Vim作为我们的IDE<br />
+vim可以让你在开发过程中尽量减少对鼠标的使用，提高编写效率</p>
+<p><a href="http://blog.csdn.net/lxrm_fly/archive/2007/08/13/1741206.aspx">Vim快速入门</a><br />
+<a href="/2009/10/10/vim.html">Vim安装使用</a></p>
+<h2>3.了解Ruby</h2>
+<p>你需要知道模块、类、继承等概念<br />
+知道循环，判断等语句<br />
+了解String,File等类的常用方法,知道API可以在哪里查询到</p>
+<p>要不断实践ruby，irb命令是你的最重要的朋友</p>
+<p><a href="http://www.javaeye.com/topic/55826">二十分钟入门</a><br />
+<a href="/2009/12/18/ruby-tips.html">Ruby延伸</a><br />
+<a href="http://cloud.github.com/downloads/saberma/saberma.github.com/ProgrammingRuby1.9.pdf">Programming Ruby 1.9</a></p>
+<h2>4.熟悉Rails</h2>
+<p>你需要知道rails的以下内容:</p>
+<p><a href="http://biaoming.javaeye.com/blog/36212">项目的目录结构</a></p>
+<p>rails项目中，也是遵循MVC模式的，开发一个功能时，可根据需要选择以下生成器</p>
+<pre>
+#看一下有哪些生成器(Installed Generators)
+script/generate
+#项目中常用以下生成器
+#生成控制器、实体、整合(包括控制器、视图、实体)
+script/generate rspec_controller
+script/generate rspec_model
+script/generate rspec_scaffold
+</pre>
+<p>url请求将由rails的哪些控制器中的哪些方法进行处理，需要了解</p>
+<p><a href="http://blackanger.blog.51cto.com/140924/122055">route机制</a></p>
+<p>出现问题时多查看后台日志<br />
+主要检查由前端页面传递至后台的参数params是否正常<br />
+并检查控制器对数据库进行操作的SQL是否正确</p>
+<pre>
+#查看开发环境的日志
+tail -f log/development.log
+</pre>
+<p><a href="https://www.ibm.com/developerworks/cn/linux/l-rubyrails/">Rails快速入门</a><br />
+<a href="http://www.letrails.cn/archives/rails-2-2-i18n-tutorials/">I18n国际化</a><br />
+<a href="http://cloud.github.com/downloads/saberma/saberma.github.com/Agile_Web_Development_with_Rails.pdf">Agile Web Development</a><br />
+<a href="http://cloud.github.com/downloads/saberma/saberma.github.com/advanced_rails_recipes.pdf">Advanced Rails Recipes</a></p>
+<p>在rails项目中，要遵守［不重复发明轮子］的原则，在开发功能(非业务)前可以先找找<br />
+<a href="http://ruby-toolbox.com/">Ruby工具箱</a></p>
+<p>要不断实践rails，script/console命令是你的最重要的朋友</p>
+<h2>5.前端技术</h2>
+<p>前端技术中的视图层是采用haml框架生成的，haml代码会转换为html代码，最终在浏览器中显示<br />
+另外包含javascript,css两部分<br />
+在项目中javascript主要使用jQuery框架编写js代码<br />
+css部分使用haml中的sass编写css代码</p>
+<p><a href="http://www.21shipin.com/html/12496.shtml">html入门_共8小节</a><br />
+<a href="http://haml-lang.com/tutorial.html">haml入门</a><br />
+<a href="http://www.prglab.com/blog/js-tutorial">javascript入门</a><br />
+<a href="http://www.cainiao8.com/web/css.html">css入门</a><br />
+<a href="http://www.k99k.com/jQuery_getting_started.html">jQuery入门</a><br />
+<a href="/2009/09/12/jquery-plugin.html">jQuery常用插件</a><br />
+<a href="http://jsgears.com/thread-402-1-1.html">jQuery最佳实践之delegate</a><br />
+<a href="http://sass-lang.com/tutorial.html">sass入门</a></p>
+<h2>6.数据库(Mysql)</h2>
+<p>经过实践，rails项目可以连接Mysql,Oracle,Sqlserver，随时可以进行切换<br />
+在开发时，我们使用Mysql作为本地数据库，所以你至少需要掌握Mysql数据库</p>
+<p><a href="http://www.xingyl.com/?m=blog&amp;id=57">Mysql入门</a></p>
+<h2>7.文档数据库(NoSQL)</h2>
+<p>先看看各大NoSQL软件的对比<br />
+<a href="http://robbin.javaeye.com/blog/524977">NoSQL数据库探讨之一 － 为什么要用非关系数据库？</a></p>
+<p><a href="http://renial.javaeye.com/blog/684829">NoSQL介绍及MongoDB入门</a><br />
+<a href="http://blog.csdn.net/lolinzhang/archive/2009/07/16/4353699.aspx">Mongodb入门</a></p>
+<p>mongodb最全最好的学习资料是在官网(支持中文但很不全)，上面还有一个TRY IT OUT，可以直接在线学习简单操作</p>
+<p><a href="http://www.mongodb.org/display/DOCS/Ruby+Language+Center">ruby数据库驱动说明</a></p>
+<p>如果采用NoSQL，则rails中就不能再使用ActiveRecord了，需要要对应的ORM<br />
+推荐使用mongoid，虽然没有mongomapper那么功能全面，好在对rails3的支持更好(率先支持activemodel等)</p>
+<p>mongoid也处于活跃开发期，所以最新资料只能看官网，最稳妥的资料只能看代码了<br />
+<a href="http://mongoid.org/docs/installation/">mongoid官方文档</a></p>
+<p>基于nosql的开源项目现在还比较少，可以参考刚起步的shopqi<br />
+<a href="http://github.com/saberma/shopqi">shopqi网店平台</a></p>
+<h2>8.测试</h2>
+<p>为保证项目质量，开发过程中需要遵循测试驱动开发</p>
+<p><a href="http://www.lycom.de/past/tags/cucumber">黄瓜测试入门</a><br />
+<a href="http://www.letrails.cn/archives/20/">Rspec入门</a></p>
+<h2>9.版本控制Git和GitHub</h2>
+<p>以上技能掌握后，项目代码就需要进行版本控制及代码托管了</p>
+<p>国内公司一般都是自建代码托管服务器，所用版本控制软件大多使用SVN,<span class="caps">VSS</span>,<span class="caps">CVS</span><br />
+前两个我倒是用过，但我还是要极力推荐Git<br />
+Git原生支持分布式代码管理(KO <span class="caps">VSS</span>)，直观的冲突处理机制(KO <span class="caps">SVN</span>)</p>
+<p>而基于Git的托管服务器Github，可以说是开源界的改革，使得开源项目真正地开源!<br />
+任何开发者可以直接获取开源代码，或追加功能或打补丁，之后只要按个按钮就可以向原作者请求合并<br />
+当然了，合并之前一般需要开发者编写好测试用例，保证代码的正确，同时不破坏原有功能</p>
+<p><a href="/2010/01/26/git.html">Git使用</a></p>
+<p>如果公司只有svn服务器，折衷的办法就是本地使用git，再远程提交至svn<br />
+<a href="/2009/09/09/git-to-svn.html">SVN集中存储</a></p>
+<h1>其他资源</h1>
+<p><a href="http://thinkvitamin.com/web-design-2/learn-web-design-free-tutorial-videos/">Learn Web Design</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/12/29/development-skills.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

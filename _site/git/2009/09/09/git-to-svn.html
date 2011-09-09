@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>svn集中存储 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,111 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/git/2009/09/09/git-to-svn.html'>svn集中存储</a></h1>
+  <span class='date'>2009-09-09</span>
+  <div class='body'><h2>安装</h2>
+<pre>
+#git-svn
+sudo apt-get install git-svn
+</pre>
+<h2>从svn获取源码</h2>
+<pre>
+#将原有zbs目录改名为zbs-git
+cd ~/Documents
+mv zbs zbs-git
+git-svn clone https://192.168.1.14/svn/zbs/trunk/1开发库/1.4系统开发 zbs
+#会提示要不要永久保留https证书，输入p
+#会提示输入您的svn用户名、密码
+</pre>
+<h2>后记</h2>
+<pre>
+#新建log目录
+mkdir log
+#创建database.yml文件
+cp config/database-example.yml config/database.yml
+#自行修改config/database.yml中的数据库用户名和密码
+#git-svn clone下来的script无可执行属性
+cd zbs
+chmod +x script
+</pre>
+<h2>使用</h2>
+<pre>
+#基本的操作与git原有的一样
+git add .
+git commit -a -m 'write sth'
+#获取最新代码由git pull改为
+git svn rebase
+#修正冲突过程与git操作不变...
+#注意！在发生冲突时，分支会被切换至"无分支"状态
+#在修正冲突后，要执行以下语句，以返回原分支
+git add .
+git rebase --continue
+#提交至svn服务器
+git svn dcommit
+</pre>
+<h2>问题</h2>
+<pre>
+git svn dcommit
+#提示以下错误
+#Committing to https://192.168.1.14/svn/zbs/trunk/1开发库/1.4系统开发 ...
+#HTTP Path Not Found: '/svn/zbs/!svn/bc/151/trunk/1' path not found at /usr/bin/git-svn line 450
+
+#google不到原因，也没有解决，后来定位到了重现的方法:
+#将一个已经上传到svn服务器的文件改名，上传就会出现上面的错误，比如：
+touch foo
+git add .
+git commit -a -m 'test file'
+git svn dcommit
+git mv foo foo1
+git commit -a -m 'test svn wired problem'
+git svn dcommit
+#此时就会出现问题了，出现此问题我只能是重新git-svn clone了
+#为避免以上问题产生，应将rename操作分解为先拷贝出来，再git rm，然后先提交rm的内容，再add刚才拷贝的新文件
+#方法好繁琐，但实在没有其他办法了
+
+#20100419，再次出现以上问题，尝试使用分步上传成功
+# 1.恢复被删除的文件
+git reset HEAD db/migrate/20100415010835_add_score_to_resource.rb
+git checkout db/migrate/20100415010835_add_score_to_resource.rb
+# 2.撤消git repository的版本到之前正常的commit
+git reset --soft bb066a4283dbbbe278489a091815f887e45037f5
+# 3.分步提交
+git add spec
+git commit -m '测试1'
+# 4. 将其他修改的文件存入stash中
+git stash
+# 5. 提交(正常)
+git svn dcommit
+# 重复执行3-5步骤，最后再删除之前要删除的文件
+git rm db/migrate/20100415010835_add_score_to_resource.rb
+&lt;pre&gt;</div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/git/2009/09/09/git-to-svn.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +159,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

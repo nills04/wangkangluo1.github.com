@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>应用jekyll构建基于github page的博客 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          <div class='post'>
+  <h1><a href='/other/2010/09/20/saberma-github-page-blog-build-with-jekyll.html'>应用jekyll构建基于github page的博客</a></h1>
+  <span class='date'>2010-09-20</span>
+  <div class='body'><p>基于github page的博客好处:</p>
+<blockquote>
+<p>简单至极，且完全免费<br />
+可以支持rss订阅，评论功能<br />
+依赖于git，文章原生支持版本控制(对比)，更有利于知识库类文章<br />
+可以使用vim编写文章，写的时候像在写代码，更符合程序员的习惯</p>
+</blockquote>
+<p>本博客此次除了启用全新个人域名saberma.me，将做以下调整</p>
+<blockquote>
+<p>美化网站风格，更加的清新:)<br />
+页面布局调整为html5、css3架构<br />
+文章可按分类显示<br />
+代码增加高亮显示<br />
+增加rss feed输出</p>
+</blockquote>
+<h2>挑个新的博客模板</h2>
+<p>要求是基于html5、css3的免费模板，google之，发现个好地方: <a href="http://freehtml5templates.com">http://freehtml5templates.com</a><br />
+一页一页的挑吧，总会找到自己喜欢的，可以根据右下角的Tag Cloud进行筛选，现在看到本站的新样子就是找好久才看中的模板</p>
+<h2>绑定独立域名</h2>
+<p>在godaddy中注册 <a href="http://saberma.em">saberma.me</a> 域名，.me专用于博客类型，但比.com贵一些，且没有优惠</p>
+<ol>
+	<li>注册完域名后，在域名管理中增加A record并指向207.97.227.245</li>
+	<li>在你的github项目下增加CNAME文件，内容为你的域名，如 <a href="http://github.com/saberma/saberma.github.com/blob/master/CNAME">http://github.com/saberma/saberma.github.com/blob/master/<span class="caps">CNAME</span></a></li>
+</ol>
+<p>具体参考 <a href="http://pages.github.com">http://pages.github.com</a> 中 <code>Custom Domains</code> 部分的内容</p>
+<h2>pygments代码高亮</h2>
+<h3>安装pygments</h3>
+<div class="highlight"><pre><code class="bash"><span class="c"># On Ubuntu 安装</span>
+sudo apt-get install python-pygments
+</code></pre>
+</div>
+<p><a href="http://wiki.github.com/mojombo/jekyll/install">完整安装说明</a></p>
+<h3>生成高亮显示的css文件</h3>
+<p>选择喜欢的样式，记下名称<br />
+<a href="http://pygments.org/demo/6622">http://pygments.org/demo/6622</a></p>
+<p>我选择的是fruity style，作为pygmentize命令style的参数值</p>
+<div class="highlight"><pre><code class="bash"><span class="c"># 生成相应的css</span>
+pygmentize -S fruity -f html &gt; stylesheets/syntax.css
+</code></pre>
+</div>
+<p><a href="http://pygments.org/docs/quickstart/">参考pygments Command line usage</a></p>
+<h3>如何使用</h3>
+<p>语法高亮的代码段</p>
+<pre>
+{% highlight ruby %}
+def foo
+  puts 'foo'
+end
+{% endhighlight %}
+</pre>
+<p>highlight后面第一个参数为language，如php，也可以是ruby控制台irb，更多lanuages可以查询 <a href="http://pygments.org/docs/lexers/">http://pygments.org/docs/lexers/</a><br />
+第一个参数为必填，不填会导致_site目录生成不了相应的html文件，第二个参数显示行号</p>
+<p><a href="http://wiki.github.com/mojombo/jekyll/liquid-extensions">参考jekyll说明</a></p>
+<h2>Markdown标记与Liquid逻辑处理</h2>
+<h3>两个知识点</h3>
+<ul>
+	<li>为避免直接编写html代码，编写文章时，内容需要加入标记信息，即Markdown</li>
+	<li>博客中都是需要经过处理的，比如逻辑判断处理、循环处理，jekyll应用liquid模板语言进行这些处理</li>
+</ul>
+<h3>Markdown</h3>
+<p>标记语言有很多种，如textile<br />
+这些标记语言会被标记引擎转换，输出成相应的目标格式（大部分情况是输出成html）<br />
+引擎也有很多种，不同的编程语言有不同的实现，ruby常用的引擎有RedCloth</p>
+<h3>Liquid</h3>
+<p>简单来说，凡是看到{{}}或者{% %}包含的内容都是会被Liquid引擎处理的</p>
+<p>比如*将日期格式化*的liquid语句</p>
+<pre>
+{{ post.date | date_to_string }}
+</pre>
+<p>除了标记的Liquid语法外，jekyll还扩展出了几个便利的方法，其中有上面介绍的highlight方法<br />
+<a href="http://wiki.github.com/mojombo/jekyll/liquid-extensions">jekyll liquid扩展</a><br />
+<a href="http://github.com/tobi/liquid/wiki/Liquid-for-Designers">liquid参考资料</a></p>
+<h2>整合评论</h2>
+<p>由于github page最终生成的都是静态html页面，所以是没有评论功能呢<br />
+但我们利用disqus实现在线评论功能，先到 <a href="http://disqus.com">http://disqus.com</a> 注册帐号(免费)<br />
+注册成功后，为简单起见，只要把 <code>_includes/post.html</code> 中的saberma替换为你的注册帐号就行了(disqus_url输入你实际的域名)</p>
+<h2>整合rss订阅</h2>
+<p>因为jekyll可以生成blogs列表，所以我们可以编写atom.xml，由jekyll生成最终xml结果<br />
+<a href="/atom.xml">这是我的atom.xml文件</a></p>
+<p>将生成的xml地址提交至 <a href="http://www.feedsky.com">feedsky.com</a> ，由feedsky进行管理和美化</p>
+<p><a href="http://elemel.se/2009/01/25/setting-up-an-atom-feed-at-github-pages.html">Setting Up an Atom Feed at GitHub Pages</a></p>
+<h2>你也想弄一个github page博客?</h2>
+<p>最快的做法是 <a href="http://github.com/saberma/saberma.github.com">fork我的博客</a> ，git clone到你的电脑<br />
+然后修改成你的，具体需要调整的地方是:</p>
+<ol>
+	<li>删除_posts中的文章</li>
+	<li>按上面介绍的[整合评论]修改 <code>_includes/post.htm</code> 文件</li>
+	<li>按上面介绍的[整合rss]修改 <code>atom.xml</code> 文件</li>
+	<li>修改CNAME的内容为你的独立域名</li>
+	<li>运行jekyll，看看效果</li>
+	<li>上传!ok，访问你的blog地址看看</li>
+</ol>
+<h2>参考资源</h2>
+<p><a href="http://blog.envylabs.com/2009/08/publishing-a-blog-with-github-pages-and-jekyll/">publishing-a-blog-with-github-pages-and-jekyll</a><br />
+<a href="http://github.com/mojombo/jekyll/wiki">jekyll wiki</a><br />
+<a href="http://pages.github.com">http://pages.github.com</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/other/2010/09/20/saberma-github-page-blog-build-with-jekyll.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>应用gitflow建立代码开发标准化流程 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,104 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/git/2010/10/25/git-flow.html'>应用gitflow建立代码开发标准化流程</a></h1>
+  <span class='date'>2010-10-25</span>
+  <div class='body'><p>我们已经使用git进行版本管理，为更好地进行协同开发工作，需要对流程进行规范<br />
+<strong><a href="http://github.com/saberma/shopqi">shopqi网店平台</a> 产品开发将遵循此流程</strong>, 以下对git的开发流程进行描述</p>
+<h2>开发流程</h2>
+<p>在开发的过程中存在以下情况:</p>
+<blockquote>
+<p>情况1: 开发新特性<br />
+情况2: 紧急修正生产环境中报告的Bug<br />
+情况3: 支援其他成员，帮忙调试</p>
+</blockquote>
+<p>假如我们在master主分支中进行新特性的开发，这时如果发生情况2，处理起来比较麻烦。</p>
+<p><strong>正确的实践应该是:</strong></p>
+<ul>
+	<li>master主分支保致与对外发布的版本同步</li>
+	<li>每个新特性(feature)都有独立的分支</li>
+	<li>将多个新特性(feature)分支合并至发布(release)分支</li>
+	<li>待发布(release)分支完成后再合并至master主分支，正式对外发布</li>
+</ul>
+<h2>应用gitflow</h2>
+<p>gitflow是开源的标准化git流程协助工具，项目地址在 <a href="http://github.com/nvie/gitflow">http://github.com/nvie/gitflow</a></p>
+<h3>安装(Ubuntu环境)</h3>
+<pre>
+wget -qO- --no-check-certificate http://github.com/nvie/gitflow/raw/develop/contrib/gitflow-installer.sh | sudo sh
+sudo apt-get install opt</pre>
+<p>其他操作系统安装gitflow请参考 <a href="http://github.com/nvie/gitflow">http://github.com/nvie/gitflow</a></p>
+<h3>使用方法</h3>
+<pre>
+#初始化(提问时回车就好)
+git flow init</pre>
+<p><strong>开发新特征</strong></p>
+<pre>
+git flow feature start &lt;name&gt; [&lt;base&gt;]
+git flow feature finish &lt;name&gt;
+#列出新特征分支
+git flow feature</pre>
+<p><strong>准备发布版本</strong></p>
+<pre>
+git flow release start &lt;name&gt; [&lt;base&gt;]
+git flow release finish &lt;name&gt;
+#列出发布分支
+git flow release</pre>
+<p>&lt; base &gt;是位于develop分支的commit</p>
+<p><strong>修正紧急Bug</strong></p>
+<pre>
+git flow hotfix start &lt;name&gt; [&lt;base&gt;]
+git flow hotfix finish &lt;name&gt;
+#列出修正分支
+git flow hotfix</pre>
+<p><strong>支援其他成员工作</strong></p>
+<pre>
+git flow support start &lt;name&gt; &lt;base&gt;
+#没有finish?(待实践)
+#列出支援分支
+git flow support</pre>
+<p>&lt; base &gt;是位于master分支的commit</p>
+<h2>结合github</h2>
+<p><strong>上传未完成的feature分支</strong></p>
+<pre>
+#git push REMOTENAME BRANCHNAME
+#一般情况下REMOTENAME即为origin, BRANCHNAME为以feature/为前缀的分支名称
+git push origin feature/orders</pre>
+<blockquote>
+<p>注意:对于develop分支，由于所有成员的本地库中都有，所以不能上传</p>
+</blockquote>
+<h2>参考资料</h2>
+<ol>
+	<li><a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a></li>
+	<li><a href="http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/">Why aren&#8217;t you using git-flow?</a></li>
+	<li><a href="http://help.github.com/remotes/">github remotes</a></li>
+</ol></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/git/2010/10/25/git-flow.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +152,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

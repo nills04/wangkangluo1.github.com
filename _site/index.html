@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          
+
+<div class='post'>
+  <h1><a href='/other/2011/08/25/how-to-diy-a-server.html'>AMD服务器DIY</a></h1>
+  <span class='date'>2011-08-25</span>
+  <div class='body'><h2><span class="caps">CPU</span></h2>
+<p>目前AMD服务器CPU主要有Opteron(皓龙)4000和6000系列，AMD的CPU都带内存控制器，直接与内存交互，而不再通过北桥芯片<br />
+价格差异点在于内核数量、主频及功耗，功耗节能版对服务器领域来说意义不大，而且价格高昂，不考虑(型号后缀为HE低功耗或EE超低功耗)</p>
+<h3><a href="http://www.amd.com/cn/products/server/processors/4000-series-platform/Pages/4000-series-platform.aspx">4000系列</a></h3>
+<p>核心数量有4核、6核，最高支持DDR3-1333，核心独占一二级缓存，共享三级缓存<br />
+候选表格如下：</p>
+<table>
+	<tr>
+		<td>型号</td>
+		<td>内核</td>
+		<td>主频</td>
+		<td>插槽类型  </td>
+		<td>功耗</td>
+		<td>价格</td>
+	</tr>
+	<tr>
+		<td>4184</td>
+		<td>6   </td>
+		<td>2.8 </td>
+		<td>Socket C32</td>
+		<td>75W </td>
+		<td>3500</td>
+	</tr>
+	<tr>
+		<td>4180</td>
+		<td>6   </td>
+		<td>2.6 </td>
+		<td>Socket C32</td>
+		<td>75W </td>
+		<td>2500</td>
+	</tr>
+	<tr>
+		<td>4130</td>
+		<td>4   </td>
+		<td>2.6 </td>
+		<td>Socket C32</td>
+		<td>75W </td>
+		<td>1650</td>
+	</tr>
+	<tr>
+		<td>4122</td>
+		<td>4   </td>
+		<td>2.2 </td>
+		<td>Socket C32</td>
+		<td>75W </td>
+		<td>1050</td>
+	</tr>
+</table>
+<p>初步选用 4180，性价比高</p>
+<h3><a href="http://www.amd.com/cn/products/server/processors/6000-series-platform/Pages/6000-series-platform.aspx">6000系列</a></h3>
+<p>核心数量有8核、12核，候选表格如下：</p>
+<table>
+	<tr>
+		<td>型号</td>
+		<td>内核</td>
+		<td>主频</td>
+		<td>插槽类型  </td>
+		<td>功耗</td>
+		<td>价格</td>
+	</tr>
+	<tr>
+		<td>6174</td>
+		<td>12  </td>
+		<td>2.2 </td>
+		<td>Socket G34</td>
+		<td>80W </td>
+		<td>8500</td>
+	</tr>
+	<tr>
+		<td>6172</td>
+		<td>12  </td>
+		<td>2.1 </td>
+		<td>Socket G34</td>
+		<td>80W </td>
+		<td>7500</td>
+	</tr>
+	<tr>
+		<td>6168</td>
+		<td>12  </td>
+		<td>1.9 </td>
+		<td>Socket G34</td>
+		<td>80W </td>
+		<td>6000</td>
+	</tr>
+	<tr>
+		<td>6136</td>
+		<td>8   </td>
+		<td>2.4 </td>
+		<td>Socket G34</td>
+		<td>80W </td>
+		<td>5600</td>
+	</tr>
+	<tr>
+		<td>6134</td>
+		<td>8   </td>
+		<td>2.3 </td>
+		<td>Socket G34</td>
+		<td>80W </td>
+		<td>3890</td>
+	</tr>
+	<tr>
+		<td>6128</td>
+		<td>8   </td>
+		<td>2.0 </td>
+		<td>Socket G34</td>
+		<td>80W </td>
+		<td>3111</td>
+	</tr>
+</table>
+<h3>芯片组</h3>
+<p>使用AMD自家的服务器芯片组:北桥SR5690/SR5670/SR5650、南桥SP5100，详见 <a href="http://www.amd.com/cn/products/server/processors/Pages/amd-platform-specifications.aspx">AMD平台规范</a></p>
+<ul>
+	<li>用于高能效云的SR5650芯片组</li>
+	<li>用于可扩展SMB 的SR5670芯片组</li>
+	<li>用于高I/O系统的SR5690</li>
+</ul>
+<h2>主板</h2>
+<p>主要生产商:超微(Supermicro)、泰安(<span class="caps">TYAN</span>)、Intel、华硕<br />
+具体要求:支持SAS硬盘、DDR3(1333MHZ最大内存至少32<br />
+有些主板带iKVM功能(Keyboard,Video,Mouse)，用来实现远程管理功能(<span class="caps">KVM</span> Over IP)</p>
+<p><a href="http://www.supermicro.com/c32/AMD_C32.cfm?pg=MOBO">超微C32系列主板</a><br />
+<a href="http://www.supermicro.com/g34/AMD_G34.cfm?pg=MOBO">超微G34系列主板</a></p>
+<table>
+	<tr>
+		<td>型号   </td>
+		<td>最大内存容量                               </td>
+		<td>插槽</td>
+		<td>数量</td>
+		<td><span class="caps">SAS</span></td>
+		<td>结构 </td>
+		<td>价格</td>
+	</tr>
+	<tr>
+		<td>H8DCL-6</td>
+		<td>128GB Registered <span class="caps">ECC</span> or 32GB Unbuffered <span class="caps">ECC</span></td>
+		<td>C32 </td>
+		<td>2   </td>
+		<td><span class="caps">SAS</span></td>
+		<td><span class="caps">ATX</span>  </td>
+		<td>$408</td>
+	</tr>
+	<tr>
+		<td>H8DG6  </td>
+		<td>256GB Registered <span class="caps">ECC</span> or 64GB Unbuffered <span class="caps">ECC</span></td>
+		<td>G34 </td>
+		<td>2   </td>
+		<td><span class="caps">SAS</span></td>
+		<td>E-<span class="caps">ATX</span></td>
+		<td>$573</td>
+	</tr>
+</table>
+<p><a href="http://www.supermicro.com/wheretobuy/asia.cfm?rgn=133">代理商</a><br />
+海红微电子,深圳市福田区天安数码城创新科技广场A座1803室,0755-83434282<br />
+星宏宝博,深圳市福田区福华一路98号卓越606B-608B,0755-83005009,13823305008,覃碧玉</p>
+<h3><a href="http://www.tyan.com.cn/product_boards2.aspx">泰安主板</a></h3>
+<p><a href="http://www.tyan.com.cn/product_boards2_list_socket.aspx?cpuid=4&amp;socketid=24&amp;chipsetid=all&amp;socketnum=all&amp;formfactor=all">泰安C32系列主板</a><br />
+<a href="http://www.tyan.com.cn/product_boards2_list_socket.aspx?cpuid=4&amp;socketid=25&amp;chipsetid=all&amp;socketnum=all&amp;formfactor=all">泰安G34系列主板</a></p>
+<p>在不确定选择哪一个主板的情况下，可以先看主板的编号；要求主板支持SAS，则编号一定要带W字母，比如:WAGM4NRF型号是支持SAS的，而AGM4NRF不支持，具体编号意义可查看 <a href="http://www.tyan.com.cn/tech/product_matrix.aspx">产品矩阵</a> 的底端说明<br />
+所以型号一定要包含WGNR(G=Onboard Gf / N=<span class="caps">LAN</span> / R= <span class="caps">RAID</span> / W= <span class="caps">SAS</span>)</p>
+<p>候选表格，泰安主板AMD系列在国内找不到网上报价，先从 <a href="newegg.com">newegg.com</a> <a href="http://www.newegg.ca/Product/Productcompare.aspx?Submit=ENE&amp;N=100007628%2050001424%20600008002&amp;IsNodeId=1&amp;bop=And&amp;CompareItemList=302|13-151-227^13-151-227-TS%2C13-151-225^13-151-225-TS%2C13-151-215^13-151-215-TS%2C13-151-214^13-151-214-TS%2C13-151-220^13-151-220-TS">比较价格</a></p>
+<table>
+	<tr>
+		<td>型号          </td>
+		<td>最大内存容量         </td>
+		<td>插槽</td>
+		<td>数量</td>
+		<td><span class="caps">SAS</span>   </td>
+		<td>主板结构    </td>
+		<td>价格</td>
+	</tr>
+	<tr>
+		<td>S8010WGM2NR   </td>
+		<td>64GB <span class="caps">RDIMM</span>/16GB <span class="caps">UDIMM</span></td>
+		<td>C32 </td>
+		<td>1   </td>
+		<td><span class="caps">SAS</span>   </td>
+		<td><span class="caps">ATX</span>         </td>
+		<td>$365</td>
+	</tr>
+	<tr>
+		<td>S8225WAGM4NRF </td>
+		<td>64GB <span class="caps">RDIMM</span>/32GB <span class="caps">UDIMM</span></td>
+		<td>C32 </td>
+		<td>2   </td>
+		<td><span class="caps">SAS</span>   </td>
+		<td>Extended <span class="caps">ATX</span></td>
+		<td>$615</td>
+	</tr>
+	<tr>
+		<td>S8226WGM3NR   </td>
+		<td>96GB                 </td>
+		<td>C32 </td>
+		<td>2   </td>
+		<td><span class="caps">SAS</span>   </td>
+		<td><span class="caps">SSI</span> <span class="caps">EEB</span>     </td>
+		<td>$560</td>
+	</tr>
+	<tr>
+		<td>S8230WGM4NR-LE</td>
+		<td>128GB                </td>
+		<td>G34 </td>
+		<td>2   </td>
+		<td>SAS2.0</td>
+		<td>Extended <span class="caps">ATX</span></td>
+		<td>$550</td>
+	</tr>
+	<tr>
+		<td>S8230WGM4NR   </td>
+		<td>128GB                </td>
+		<td>G34 </td>
+		<td>2   </td>
+		<td>SAS2.0</td>
+		<td>Extended <span class="caps">ATX</span></td>
+		<td>$580</td>
+	</tr>
+	<tr>
+		<td>S8236WGM3NR   </td>
+		<td>128GB                </td>
+		<td>G34 </td>
+		<td>2   </td>
+		<td>SAS2.0</td>
+		<td><span class="caps">SSI</span> <span class="caps">EEB</span>     </td>
+		<td>$570</td>
+	</tr>
+</table>
+<p><a href="http://www.tyan.com.cn/wtb_asia.aspx#CHINA">华南区代理商</a><br />
+深圳市亿时空科技有限公司,深圳市福田区华强北路宝华大厦A629室,0755-88863168,孙先生</p>
+<h2>内存</h2>
+<p>以下应用技术也是影响内存价格的重要因素</p>
+<table>
+	<tr>
+		<td>Unbuffered Ecc <span class="caps">DIMM</span></td>
+		<td>低端服务器工作站内存</td>
+	</tr>
+	<tr>
+		<td>Registered <span class="caps">DIMM</span>    </td>
+		<td>高端服务器工作站内存</td>
+	</tr>
+	<tr>
+		<td>Fully Buffered <span class="caps">DIMM</span></td>
+		<td>全缓冲服务器内存    </td>
+	</tr>
+</table>
+<p>在产品报价上看到产品名称带FB的，一般都为全缓冲服务器内存，暂不需要考虑此类产品</p>
+<p>要带ECC纠错技术，通过IC颗粒的分布可以看出是否带有ECC功能，ECC比普通NO ECC内存多1颗IC芯片<br />
+买DDR3的，电压低至1.5v，数据传输率(800/1066/1333/1600)</p>
+<p>为了让双通道技术发挥作用，假如需要的内存总量为8G的，则买两条4G的，分别插入 <strong>同颜色</strong> 的DIMM</p>
+<p>候选表格如下:</p>
+<table>
+	<tr>
+		<td>型号                     </td>
+		<td>价格</td>
+	</tr>
+	<tr>
+		<td>Ramax <span class="caps">REG</span>/DDR3/1333/4G   </td>
+		<td>959 </td>
+	</tr>
+	<tr>
+		<td>三星8GB DDR3 1333 <span class="caps">REG</span> <span class="caps">ECC</span></td>
+		<td>799 </td>
+	</tr>
+	<tr>
+		<td>三星4GB DDR3 1333 <span class="caps">ECC</span>    </td>
+		<td>350 </td>
+	</tr>
+</table>
+<h2>硬盘</h2>
+<p>最大的选择点在于是选择传统的机械硬盘还是SSD固态硬盘，后者在IOPS上有极大地物理优势，但价格较高</p>
+<p><strong>机械硬盘HDD</strong></p>
+<p>这里只考虑希捷的硬盘，选用SAS2.0（串行连接SCSI）6Gb/s接口；2.5英寸的Savvio 15K系列没有货源；只能选择3.5英寸<br />
+根据 <a href="http://www.seagate.com/www/zh-cn/products/enterprise-hard-drives/cheetah-15k">希捷官网面向企业级Cheetah® 15K</a> 的描述，支持SAS2.0，15K的候选表格如下:</p>
+<table>
+	<tr>
+		<td>型号                                     </td>
+		<td>编号       </td>
+		<td>缓存</td>
+		<td>盘片</td>
+		<td>报价</td>
+	</tr>
+	<tr>
+		<td>希捷 Cheetah(捷豹) 15K.7 <span class="caps">SAS</span> 6Gb/秒 300GB</td>
+		<td>ST3300657SS</td>
+		<td>16MB</td>
+		<td>2   </td>
+		<td>1520</td>
+	</tr>
+	<tr>
+		<td>希捷 Cheetah(捷豹) 15K.7 <span class="caps">SAS</span> 6Gb/秒 450GB</td>
+		<td>ST3450857SS</td>
+		<td>16MB</td>
+		<td>3   </td>
+		<td>1840</td>
+	</tr>
+	<tr>
+		<td>希捷 Cheetah(捷豹) 15K.7 <span class="caps">SAS</span> 6Gb/秒 600GB</td>
+		<td>ST3600057SS</td>
+		<td>16MB</td>
+		<td>4   </td>
+		<td>2410</td>
+	</tr>
+</table>
+<p><strong>固态硬盘SSD</strong></p>
+<p>如果服务器应用并不需要海量存储，可以选择SSD固态硬盘。SSD产品非常多，主要选择适用企业应用的产品</p>
+<p>固态硬盘的价格差异点在于主控、存储方式、容量</p>
+<p>主控：连接闪存和外部SATA接口，决定数据要存储在哪个闪存block，常见品牌有:</p>
+<ol>
+	<li>intel 芯片(PC29AS21BA0)采用34nm颗粒工艺的Gen2版本，X25-E Extreme SATA系列专用于服务器，也为威刚、金士顿等品牌代工</li>
+	<li>SandForce 芯片(SF-1565TA2-<span class="caps">SBH</span>)的SF1500面向服务器，代表性产品:海盗船Force系列</li>
+	<li>Jmicron <strong>别买来做服务器</strong></li>
+</ol>
+<p>存储方式分为:</p>
+<ol>
+	<li><acronym title="单层式储存"><span class="caps">SLC</span></acronym> 一个block只记录0和1数值，速度快(特别是随机写)，稳定，寿命长(10万次擦写)，成本高</li>
+	<li><acronym title="多层式储存"><span class="caps">MLC</span></acronym> 一个block记录00,01,11,10四组数值，存储空间翻倍，寿命短(1万次擦写)，成本低</li>
+</ol>
+<p>候选表格如下(尺寸都为2.5英寸,NAND闪存类型都为SLC):</p>
+<table>
+	<tr>
+		<td>型号                 </td>
+		<td>编号           </td>
+		<td>读取速度</td>
+		<td>写入速度</td>
+		<td>接口类型   </td>
+		<td>价格</td>
+	</tr>
+	<tr>
+		<td>Intel X25-E 50nm(32G)</td>
+		<td>SSDSA2SH032G1GN</td>
+		<td>250MB/S </td>
+		<td>170MB/S </td>
+		<td><span class="caps">SATA</span> II    </td>
+		<td>2385</td>
+	</tr>
+	<tr>
+		<td>Intel X25-E 50nm(64G)</td>
+		<td>SSDSA2SH064G101</td>
+		<td>250MB/S </td>
+		<td>170MB/S </td>
+		<td><span class="caps">SATA</span> II    </td>
+		<td>4550</td>
+	</tr>
+	<tr>
+		<td>希捷Pulsar XT.2(100G)</td>
+		<td>ST100FX0002    </td>
+		<td>360MB/S </td>
+		<td>300MB/S </td>
+		<td><acronym title="6-Gb/s"><span class="caps">SAS</span></acronym></td>
+		<td>    </td>
+	</tr>
+</table>
+<p>4K随机读写性能，顺序读写速度对于大数据量来说非常重要，但作为系统盘(即非单纯的数据存储)，最关键的还是4k随机读写这一参数</p>
+<p>供应商:</p>
+<table>
+	<tr>
+		<td>名称         </td>
+		<td>地址                   </td>
+		<td>联系人</td>
+		<td>电话         </td>
+		<td>手机       </td>
+		<td>网店                               </td>
+	</tr>
+	<tr>
+		<td>风驰计算机   </td>
+		<td>华强北国利大厦1711-1716</td>
+		<td>杨颖  </td>
+		<td>0755 83743198</td>
+		<td>13823752475</td>
+		<td><a href="http://m.pconline.com.cn/shop495935">网址</a></td>
+	</tr>
+	<tr>
+		<td>服务器专卖   </td>
+		<td>现代之窗b座8楼8i       </td>
+		<td>谢先生</td>
+		<td>             </td>
+		<td>13715330262</td>
+		<td><a href="http://shop34747127.taobao.com">网址</a>     </td>
+	</tr>
+	<tr>
+		<td>LBC服务器专卖</td>
+		<td>赛格电子市场5楼        </td>
+		<td>黄先生</td>
+		<td>             </td>
+		<td>13510979215</td>
+		<td><a href="http://diyservers.taobao.com">网址</a>       </td>
+	</tr>
+</table>
+<h2>机箱</h2>
+<h3>大小</h3>
+<p>宽(48.26cm＝19英寸)，高(1u=4.445cm的倍数)<br />
+长度主要分为两组</p>
+<ol>
+	<li>标准组 长度约为625－725毫米，支持双CPU服务器主板(含12×13英寸超大尺寸)</li>
+	<li>短款组 长度约为360－525毫米，仅支持单CPU服务器主板</li>
+</ol>
+<h3>主板结构</h3>
+<ol>
+	<li><span class="caps">ATX</span> 12&#8243;&#215;9.5&#8243; (30.5cmx24.2cm)</li>
+	<li><span class="caps">MEB</span> 16.2&#8243;&#215;13&#8243; (411&#215;330mm)</li>
+	<li><span class="caps">SSI</span> <span class="caps">EEB</span> 12&#8243;&#215;13&#8243; (305&#215;330mm)</li>
+	<li><span class="caps">EATX</span> 12&#8243;&#215;13&#8243; (305&#215;330mm) 大小于EEB相同，但是两者不可替换使用(因为螺丝口都不一样)</li>
+</ol>
+<h3>散热</h3>
+<p>重中之重，安装6个以上的风扇<br />
+主要散热点为CPU、主板芯片组、内存、硬盘</p>
+<h3><a href="http://www.fywx.cc/Product_List.php?root_id=5&amp;cat_id=28">超微机箱</a></h3>
+<table>
+	<tr>
+		<td>型号                        </td>
+		<td><span class="caps">CPU</span>  </td>
+		<td>适用主板           </td>
+		<td>硬盘位      </td>
+		<td>IO slots    </td>
+		<td>电源功率</td>
+		<td>报价</td>
+	</tr>
+	<tr>
+		<td>SC815TQ-560UV/SC815TQ-560UB </td>
+		<td>DP/UP</td>
+		<td>13.68&#8243;&#215;13&#8243;E-<span class="caps">ATX</span>    </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>2x FF, 1x LP</td>
+		<td>560W    </td>
+		<td>3200</td>
+	</tr>
+	<tr>
+		<td>SC815TQ-560V/SC815TQ-560B   </td>
+		<td>DP   </td>
+		<td>12&#8243;&#215;13&#8243;E-<span class="caps">ATX</span>       </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FF, 1x LP</td>
+		<td>560W    </td>
+		<td>3200</td>
+	</tr>
+	<tr>
+		<td>SC815TQ-560CV/SC815TQ-560CB </td>
+		<td>DP   </td>
+		<td>(12&quot;,13.68&quot;)x10&quot;ATX</td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FF       </td>
+		<td>560W    </td>
+		<td>    </td>
+	</tr>
+	<tr>
+		<td>SC813TQ-520/SC813TQ-520B    </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;13&#8243;E-<span class="caps">ATX</span>       </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FF, 1x LP</td>
+		<td>520W    </td>
+		<td>3178</td>
+	</tr>
+	<tr>
+		<td>SC813TQ-520C/SC813TQ-520CB  </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;13&#8243;E-<span class="caps">ATX</span>       </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FF       </td>
+		<td>520W    </td>
+		<td>    </td>
+	</tr>
+	<tr>
+		<td>SC813TQ-500/SC813TQ-500B    </td>
+		<td>DP   </td>
+		<td>12&#8243;&#215;13&#8243;E-<span class="caps">ATX</span>       </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FH, 1x LP</td>
+		<td>500W    </td>
+		<td>3743</td>
+	</tr>
+	<tr>
+		<td>SC813MFTQ-520CB             </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>520W    </td>
+		<td>2635</td>
+	</tr>
+	<tr>
+		<td>SC813MTQ-520C/SC813MTQ-520CB</td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>520W    </td>
+		<td>2688</td>
+	</tr>
+	<tr>
+		<td>SC813MT-420C/SC813MS-420CB  </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>420W    </td>
+		<td>    </td>
+	</tr>
+	<tr>
+		<td>SC813MT-410C/SC813MT-410CB  </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>410W    </td>
+		<td>    </td>
+	</tr>
+	<tr>
+		<td>SC813MT-300C/SC813MT-300CB  </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>4&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>300W    </td>
+		<td>    </td>
+	</tr>
+	<tr>
+		<td>SC811TQ-520/SC811TQ-520B    </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>2&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>520W    </td>
+		<td>2368</td>
+	</tr>
+	<tr>
+		<td>SC811TQ-350B                </td>
+		<td>DP/UP</td>
+		<td>12&#8243;&#215;10&#8243;<span class="caps">ATX</span>         </td>
+		<td>2&#215;3.5英寸SAS</td>
+		<td>1x FH       </td>
+		<td>350W    </td>
+		<td>    </td>
+	</tr>
+</table>
+<p>型号带Twin，是专为双子星产品而设计的，1u空间可以装入2块主板；<br />
+型号带Q，支持SAS/SATA；S，支持SCSI；R，冗余双电源，U指支持单路主板；V或者B指颜色<br />
+IO slots:FF=全高，全长的扩展卡;FH=全高，半长的扩展卡;LP=矮板扩展卡</p>
+<h2>其他</h2>
+<p>操作过程一定要带防静电手套<br />
+在查询时应该多使用&quot;实测&quot;、&quot;评测&quot;、&quot;企业级&quot;、&quot;如何选购&quot;，以最大可能地了解各种配件在实际中的使用情况</p>
+<h2>参考资源</h2>
+<p><a href="http://news.mydrivers.com/1/167/167758.htm">AMD服务器新平台第二波：Opteron 4100登场</a><br />
+<a href="http://www.amd.com/cn/products/server/processors/Pages/server-processors.aspx">AMD服务器平台</a><br />
+<a href="http://detail.zol.com.cn/servercpu_index/subcate383_55_list_s2775_1.html"><span class="caps">AMD</span> <span class="caps">CPU</span> 报价</a></p>
+<p><a href="http://www.liusuping.com/it-tech/server-rdimm-udimm.html">UDIMM与RDIMM区别</a></p>
+<p><a href="http://hi.baidu.com/tyc6982/blog/item/b75d55ce519deb37b700c870.html">如何选购固态硬盘</a><br />
+<a href="http://storage.it168.com/a2011/0104/1145/000001145668_all.shtml">测试探究SSD固态硬盘性能下降的谜题</a></p>
+<p><a href="http://www.ittong.net/News_37191.html">DIY服务器机箱组装经验谈</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/other/2011/08/25/how-to-diy-a-server.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

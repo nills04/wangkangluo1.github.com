@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>部署rails项目到heroku，并使用mongohq文档数据库 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,117 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2010/12/23/deploy-rails-app-to-heroku-and-use-mongohq.html'>部署rails项目到heroku，并使用mongohq文档数据库</a></h1>
+  <span class='date'>2010-12-23</span>
+  <div class='body'><h2>简介</h2>
+<h3>Heroku</h3>
+<p><img src="/images/article/heroku/heroku.png" alt="" /></p>
+<p>heroku作为rails项目的托管商，具有功能完备、操作简单等优点，而且提供免费服务<br />
+免费项目只提供一个应用服务进程(即只同时在线1个)，提供5m免费关系型数据库</p>
+<h3>MongoHQ</h3>
+<p><img src="/images/article/heroku/mongohq.png" alt="" /></p>
+<p>mongohq提供mongodb文档数据库的在线存储服务<br />
+免费帐号每个数据库有16m的存储空间，heroku已经支持mongohq，将之纳入addons中</p>
+<blockquote>
+<p>因此，想要把迷你型或实验性的项目放到网上，又想免费，heroku是最好的选择了</p>
+</blockquote>
+<p>这几天想要查找域名，需要批量查找5-8位拼音组合的.com域名(四位的已绝迹)<br />
+所以写了个程序批量查找有效域名，放到heroku上。</p>
+<h2>安装heroku</h2>
+<pre>
+gem install heroku --no-ri -no-rdoc</pre>
+<h3>安装其他</h3>
+<p>rails3及mongodb等环境的安装，可参考 <a href="http://github.com/saberma/shopqi">http://github.com/saberma/shopqi</a></p>
+<h2>新增项目</h2>
+<h3>新增rails项目</h3>
+<pre>
+rails new test_heroku
+cd test_heroku
+#修改GemFile，加入必要的Gem
+#...
+#生成mongoid配置文件
+rails g mongoid:config
+git init
+git add .
+git commit -m "new app"</pre>
+<h3>新建heroku app</h3>
+<blockquote>
+<p>先到 <a href="heroku.com">heroku.com</a> 注册帐号</p>
+</blockquote>
+<pre>
+heroku create test_heroku
+#按提示输入注册时的帐号和密码</pre>
+<h3>加入MongoHQ Addon</h3>
+<pre>
+heroku addons:add mongohq:free
+#查看新增的数据库信息(MONGOHQ_URL部分)
+heroku config --long</pre>
+<p>修改 <code>config/mongoid.yml</code>, production只留以下内容</p>
+<pre>
+production:
+  uri: &lt;%= ENV['MONGOHQ_URL'] %&gt;</pre>
+<p><strong>mongoid已经支持uri参数了，不需要像mongohq官方文档描述的那样，增加config/initialize/mongo.rb文件</strong></p>
+<h3>部署至heroku</h3>
+<pre>
+git push heroku master</pre>
+<h3>测试</h3>
+<p>浏览器访问 <a href="http://test_heroku.heroku.com">http://test_heroku.heroku.com</a> ，看是否显示rails的信息</p>
+<h2>在MongoHQ中查看数据</h2>
+<ol>
+	<li>登录 <a href="https://mongohq.com/databases">MongoHQ</a></li>
+	<li>点击右边栏按钮&quot;Add a Remote Connection&quot;</li>
+	<li>输入Name和URI，确定</li>
+</ol>
+<blockquote>
+<p>URI为heroku中通过 <code>heroku config --long</code> 查看到的MONGOHQ_URL内容</p>
+</blockquote>
+<h2>heroku常用命令</h2>
+<pre>
+# 运行rake
+heroku rake db:seed
+# 运行控制台
+# 查看运行进行
+heroku ps
+# 查看日志
+heroku logs
+# 查看参数
+heroku config --long
+# 重命名(子域名)
+heroku rename newname
+heroku console</pre>
+<h2>参考资源</h2>
+<p><a href="http://docs.heroku.com/">Heroku Docs</a><br />
+<a href="http://docs.mongohq.com/ruby-heroku-addon">MongoHQ Heroku Addon</a><br />
+<a href="http://github.com/nbrochu/bulkdom">Batch Search Domains</a><br />
+<a href="http://vimim.googlecode.com/files/fcitx.phrase.pinyin.txt">Fcitx Phrase Pinyin</a><br />
+<a href="http://open-phrase.googlecode.com/files/phrase_pinyin_freq_sc_20090402.txt.bz2">Pinyin Frequence</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2010/12/23/deploy-rails-app-to-heroku-and-use-mongohq.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +165,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

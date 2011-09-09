@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>Rails问题集 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,71 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2009/09/23/rails-problems.html'>Rails问题集</a></h1>
+  <span class='date'>2009-09-23</span>
+  <div class='body'><p>这里记录我遇到的，但在网络上无法找到解决方法的问题</p>
+<h1>undefined method `alias_method_chain&#8217; for I18n::Backend::Simple:Class</h1>
+<p>在将ruby1.8.7p72换成ruby mbari 1.8.7-p72后出现的问题，问题比较隐蔽(2009-09-23)</p>
+<pre>
+#运行script/console,报以下错误
+/usr/local/lib/ruby/gems/1.8/gems/activerecord-2.3.2/lib/active_record/i18n_interpolation_deprecation.rb:23:NoMethodError: undefined method `alias_method_chain' for I18n::Backend::Simple:Class
+</pre>
+<p>经过google,irc后，没有找到解决方法<br />
+最接近问题的就是 <a href="http://shapingclouds.com/2009/06/11/solution-for-undefined-method-alias_method_chain-after-upgrading-to-rails-2-3-2/">这篇文章</a></p>
+<p>但并不能解决问题，尝试自己解决</p>
+<pre>
+#查看i18n_interpolation_deprecation源码发现根本看不出问题
+#只发现加载了active_support中的i18n/backend/simple
+#因此怀疑active_support加载过程中已经出错了
+irb
+&gt; require 'rubygems'
+&gt; require 'activesupport'
+#报以下错误
+# LoadError: libruby.so.1.8: cannot open shared object file: No such file or directory - /usr/local/ruby/lib/ruby/1.8/x86_64-linux/bigdecimal.so
+#果然,ldd一下
+ldd /usr/local/ruby/lib/ruby/1.8/x86_64-linux/bigdecimal.so
+# linux-vdso.so.1 =&gt;  (0x00007fff647fe000)
+# libruby.so.1.8 =&gt; not found
+# libdl.so.2 =&gt; /lib/libdl.so.2 (0x00007f415c1d0000)
+# libcrypt.so.1 =&gt; /lib/libcrypt.so.1 (0x00007f415bf97000)
+# libm.so.6 =&gt; /lib/libm.so.6 (0x00007f415bd16000)
+# libc.so.6 =&gt; /lib/libc.so.6 (0x00007f415b9b4000)
+# /lib64/ld-linux-x86-64.so.2 (0x00007f415c5e8000)
+
+#找一下有没有这个文件
+find / -iname libruby.so.1.8
+# /home/saberma/ruby-1.8.7-p72/libruby.so.1.8
+# 在ruby的安装源码包中有这个文件，拷贝至加载路径
+cp /home/saberma/ruby-1.8.7-p72/libruby.so.1.8 /usr/lib
+# 再次运行script/console，一切顺利
+</pre></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/09/23/rails-problems.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +119,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

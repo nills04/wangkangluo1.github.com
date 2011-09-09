@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>应用chef安装openvpn | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,144 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/linux/2011/02/13/use-chef-to-install-openvpn-in-burst-vps.html'>应用chef安装openvpn</a></h1>
+  <span class='date'>2011-02-13</span>
+  <div class='body'><h2>burst vps</h2>
+<p>之前买了burst的vps，现在准备为它安装openvpn<br />
+使用openvpn需要先登录后台管理 <a href="https://184.82.225.10:2408">https://184.82.225.10:2408/index.php</a><br />
+在Networking &amp; Utilities 启用 Enable Tun/Tap</p>
+<h2>安装openvpn</h2>
+<p>假设vps ip为188.188.188.188<br />
+ssh密码为123456</p>
+<p>把这台vps当成vpn服务器，实现无障碍访问互联网</p>
+<pre>
+export EDITOR=vim
+knife role create vpn</pre>
+<p>knife会打开vim，将内容修改为:</p>
+<pre>
+{
+  "name": "vpn",
+  "description": "openvpn server",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+    "chef": {
+      "server_url": "https://api.opscode.com/organizations/#{YOUR COMPANY!}",
+      "cache_path": "/var/chef/cache",
+      "backup_path": "/var/chef/backup",
+      "validation_client_name": "#{YOUR COMPANY!}-validator",
+      "run_path": "/var/chef"
+    }
+  },
+  "override_attributes": {
+  },
+  "chef_type": "role",
+  "run_list": [
+    "recipe[openvpn::default]"
+  ]
+}</pre>
+<p>修改完后退出vim，会提示已经</p>
+<blockquote>
+<p>Created (or updated) role[vpn]</p>
+</blockquote>
+<p>下载相应的cookbook</p>
+<pre>
+#此命令最常用
+knife cookbook site vendor openvpn</pre>
+<p>远程生成服务端的keys，以下命令在本地执行<br />
+在bash，dot点号命令与source命令一样，把文件加载至shell内存空间</p>
+<p>修改/cookbooks/openvpn/templates/default/server.up.sh.erb，加入以下内容</p>
+<blockquote>
+<p>/sbin/sysctl -w net.ipv4.ip_forward=1<br />
+/sbin/iptables -t nat -A <span class="caps">POSTROUTING</span> -s &lt;%= @openvpn[:subnet] <span>&gt;/&lt;</span>= @openvpn[:netmask] <span>&gt; -j <span class="caps">SNAT</span>  &#8212;to-source &lt;</span>= @openvpn[:local] %&gt;</p>
+</blockquote>
+<p>修改cookbooks/openvpn/recipes/default.rb，加入变量</p>
+<blockquote>
+<p>template &#8220;/etc/openvpn/server.up.sh&#8221; do<br />
+　source &#8220;server.up.sh.erb&#8221;<br />
+　variables :openvpn =&gt; node[:openvpn]<br />
+end</p>
+</blockquote>
+<pre>
+cd files/default/easy-rsa
+. vars
+rake server</pre>
+<p>为node加入role</p>
+<pre>
+knife node list
+#以上查看node id，假如为201166，现在查看node的run_list
+#加入刚才新增的role
+knife node run_list add 201166 "role[vpn]"
+knife cookbook upload -a</pre>
+<p>远程登录vps，开始按run_list运行指定recipe</p>
+<pre>
+ssh root@188.188.188.188
+chef-client</pre>
+<p>在本地配置vpn client</p>
+<pre>
+sudo apt-get install openvpn
+cd files/default/easy-rsa
+. vars
+#注意不要运行多次，多次运行的时候请更换name，否则生成的.crt文件会为空
+rake client name="client" gateway="188.188.188.188"
+sudo mkdir /etc/openvpn
+cd /etc/openvpn
+sudo cp /tmp/client.zip .
+sudo unzip client.zip</pre>
+<p>修改DNS，否则就算边上vpn也不能访问twitter等，修改 <code>/etc/resolv.conf</code>为:</p>
+<blockquote>
+<p>nameserver 8.8.8.8<br />
+nameserver 8.8.4.4</p>
+</blockquote>
+<p>测试</p>
+<pre>
+#在服务端运行
+openvpn --config /etc/openvpn/server.conf --script-security 2
+#在客户端运行
+sudo openvpn --config /etc/openvpn/client.conf</pre>
+<p>此时，再通过浏览器访问的google.com不会再跳转至google.com.hk了</p>
+<h2>ssh通道?</h2>
+<p>除了vpn，我们还可以使用ssh通道访问受限网站</p>
+<pre>
+#autossh支持断线重连
+sudo apt-get install autossh
+autossh -M 2000 -N -v root@188.188.188.188 -D 127.0.0.1:7070</pre>
+<p>结合&quot;chrome proxy switch&quot;:https://chrome.google.com/extensions/detail/caehdcpeofiiigpdhbabniblemipncjj?hl=zh-cn 可以让浏览器自动切换代理</p>
+<h2>调试</h2>
+<h3>日志</h3>
+<pre>
+tail -f /var/log/openvpn.log</pre>
+<h2>参考资源<br />
+<a href="http://www.lenghost.cn/vps/burstnet-vps-openvpn-install/">BurstNET的VPS安装OpenVPN教程总结</a><br />
+<a href="http://openvpn.net/index.php/open-source/documentation/howto.html">Openvpn Document</a><br />
+<a href="http://wiki.wowubuntu.com/blog/ubuntu_ssh_tunneling">ssh tunneling</a><br />
+<a href="http://imyue.net/?p=1167">Chrome自动使用代理</a></h2></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/linux/2011/02/13/use-chef-to-install-openvpn-in-burst-vps.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +192,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

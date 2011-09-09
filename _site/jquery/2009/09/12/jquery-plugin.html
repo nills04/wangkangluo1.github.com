@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>jQuery常用插件 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,89 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/jquery/2009/09/12/jquery-plugin.html'>jQuery常用插件</a></h1>
+  <span class='date'>2009-09-12</span>
+  <div class='body'><p>jQuery的简洁高效，越来越受到程序员的欢迎了<br />
+这里介绍我使用过的jQuery插件</p>
+<h2>jrails</h2>
+<p>jrails不算是一个jquery的插件，而是一个js适配器<br />
+用于将rails自带的js框架prototype，无缝地替换为jQuery<br />
+强烈推荐使用<br />
+<a href="http://ennerchi.com/projects/jrails">project</a></p>
+<h2>facebox</h2>
+<p>实现lightbox功能<br />
+<a href="http://plugins.jquery.com/project/facebox">project</a><br />
+手动处理：修正跟blueprintcss框架冲突导致facebox边框显示重叠的问题<br />
+<a href="http://famspam.com/facebox/">demo</a></p>
+<h2>times</h2>
+<p>定时器<br />
+<a href="http://plugins.jquery.com/project/timers">project</a><br />
+<a href="http://jquery.offput.ca/timers/">demo</a></p>
+<h2>tooltip</h2>
+<p>title属性指定指示信息显得有点简陋了，用tooltip实现Div层提示<br />
+手动处理：修正在firefox下提示层定位不准的问题<br />
+<a href="http://flowplayer.org/tools/index.html">project</a><br />
+<a href="http://flowplayer.org/tools/tooltip.html">demo</a></p>
+<h2>easy slider</h2>
+<p>内容较大(多行)的情况下，实现滚动显示内容<br />
+手动处理：增加了鼠标移入时暂停滚动，修正滚动至最后一项后不能平滑过渡到第一项的问题<br />
+<a href="http://cssglobe.com/post/5780/easy-slider-17-numeric-navigation-jquery-slider">project</a><br />
+<a href="http://cssglobe.com/lab/easyslider1.7/03.html">demo</a></p>
+<h2>Jcrop</h2>
+<p>用于框选图片中的区域，以实现定位或对图片进行裁剪<br />
+<a href="http://plugins.jquery.com/project/Jcrop">project</a><br />
+<a href="http://deepliquid.com/projects/Jcrop/demos.php">demo</a></p>
+<h2>label over</h2>
+<p>一般情况下，输入框旁边都会带上label说明<br />
+在布局较小的情况下，也许你希望输入框内容直接显示说明<br />
+当用户输入内容时，说明内容自动清除，label over就是实现此功能的插件<br />
+<a href="http://plugins.jquery.com/project/labelover">project</a><br />
+<a href="http://remysharp.com/wp-content/uploads/2007/03/label_over_example.html">demo</a></p>
+<h2>ZeroClipboard</h2>
+<p>结合Flash实现跨浏览器复制网页中内容(或当前地址)到剪贴板<br />
+严格来说这个不算jQuery的插件:)<br />
+<a href="http://code.google.com/p/zeroclipboard/">project</a></p>
+<h2>MultiFile</h2>
+<p>实现浏览器多文件上传时，只显示一个文件浏览按钮</p>
+<pre>
+#修正删除按钮样式
+$.fn.MultiFile.options.STRING.remove = '&lt;a class="icon-16px-box j-icon i-close"&gt;&amp;nbsp;&lt;/a&gt;';
+</pre>
+<p><a href="http://www.fyneworks.com/jquery/multiple-file-upload/">project</a></p>
+<h2>JQZoom</h2>
+<p>放大查看图片某一部分，网购产品必备</p>
+<p><a href="http://www.mind-projects.it/projects/jqzoom">project</a><br />
+<a href="http://www.mind-projects.it/projects/jqzoom/demos.php">demo</a></p>
+<h2>jCarousellite</h2>
+<p>显示图片组</p>
+<p><a href="http://www.gmarwaha.com/jquery/jcarousellite/index.php">project</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/jquery/2009/09/12/jquery-plugin.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +137,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

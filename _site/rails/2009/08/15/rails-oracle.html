@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>Oracle on Rails | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,118 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2009/08/15/rails-oracle.html'>Oracle on Rails</a></h1>
+  <span class='date'>2009-08-15</span>
+  <div class='body'><h1>Oracle on Rails</h1>
+<pre>
+#如果生产环境使用Oracle，则需要以下操作
+cd ~
+#instance client必须
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/oracle-instantclient-basic_10.2.0.3-2_i386.deb
+sudo dpkg -i oracle-instantclient-basic_10.2.0.3-2_i386.deb
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/oracle-instantclient-devel_10.2.0.3-2_i386.deb
+sudo dpkg -i oracle-instantclient-devel_10.2.0.3-2_i386.deb
+#非必须，sqlplus用于调试是否能正常连接
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/oracle-instantclient-sqlplus_10.2.0.3-2_i386.deb
+sudo dpkg -i oracle-instantclient-sqlplus_10.2.0.3-2_i386.deb
+#设置client路径
+export LD_LIBRARY_PATH=/usr/lib/oracle/10.2.0.3/client/lib/
+#设置客户端编码(重要！否则会乱码)
+export NLS_LANG=AMERICAN_AMERICA.UTF8
+#以上参数设置要放于全局设置文件中
+echo "export LD_LIBRARY_PATH=/usr/lib/oracle/10.2.0.3/client/lib/" &gt;&gt; ~/.bashrc
+echo "export NLS_LANG=AMERICAN_AMERICA.UTF8" &gt;&gt; ~/.bashrc
+
+#测试sqlplus能连接到Oracle服务器
+#sqlplus myuser/mypassword@//myserver/mydatabase.mydomain.com
+sqlplus zbs_ciis/zbs@//192.168.1.29/orcl
+  desc users;
+  #正常的话应能返回users表结构
+
+#安装ruby-oci8所需包
+sudo apt-get install libaio1
+#安装ruby-oci8，注意不能使用sudo，否则无法正常获取LD_LIBRARY_PATH参数
+gem install ruby-oci8 --no-ri --no-rdoc --version 1.0.6
+
+#注意,如果是mac平台,则安装ruby-oci8前先定义以下参数,否则mkmf.log会报
+#ld: warning: in /usr/local/oracle/instantclient/libclntsh.dylib, file is not of required architecture
+#Undefined symbols for architecture i386:
+#  "_OCIInitialize", referenced from:
+#    _OCIInitialize$non_lazy_ptr in cc1EmgZD.o
+#ld: symbol(s) not found for architecture i386
+export ARCHFLAGS="-arch x86_64"
+#一定要注意cpu的类型是intel(32bit?64bit?)还是ppc的,下载时要区分
+                                                                                                                                                             
+#测试
+irb
+require 'rubygems'
+require 'oci8'
+#不报错，则表示直连正常
+OCI8.new('ciis', 'ciis', '//192.168.1.29:1521/orcl')
+
+#安装rails数据库适配器
+sudo gem install saberma-activerecord-oracle_enhanced-adapter-nvarchar2 --no-ri --no-rdoc
+#另外，数据库的IP地址、用户名密码等在config/database.yml中配置
+</pre>
+<h1>注意事项</h1>
+<p>migration中定义字段长度(:limit =&gt; 1)时，当长度等于1，oracle-adapter会将相应的实体属性类型设置为boolean<br />
+所以最好将长度设置为1以上的值</p>
+<h1>开发中的Oracle问题</h1>
+<p>1.<br />
+关联查询时的条件字段要明确指定<br />
+碰到的问题为mysql下order by id正常, Oracle报错：OCIError: <span class="caps">ORA</span>-00918: column ambiguously defined</p>
+<p>2.<br />
+`表名`问题<br />
+mysql会给表名外加``(注意不是单引号),手工加条件(如排序: order by `departments`.id)时,mysql正常，Oracle报错： OCIError: <span class="caps">ORA</span>-00911: invalid character</p>
+<p>3.<br />
+级联更新问题<br />
+has_one、has_many如未设置:dependent=&gt;:delete/:delete_all，解除子项关联时，默认会去更新子项的外键为NULL，mysql下没问题，Oracle报错：OCIError: <span class="caps">ORA</span>-01407: cannot update</p>
+<p>4.<br />
+日期问题<br />
+2个短格式(yyyy-mm-dd)日期(一个从数据库取)直接相减求时间差得到相差天数, mysql下正常，oracle下出错, 可以采取date.to_s(:db).to_date的办法解决</p>
+<p>5.<br />
+修改字段<br />
+如果字段值不为空，oracle下不可修改字段类型，mysql下可以，可以用增加临时字段的方式解决。</p>
+<h1>附录</h1>
+<p>/etc/tnsnames.ora 文件内容如下:</p>
+<pre>
+db29 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.29)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = orcl)
+    )
+  )
+</pre></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/08/15/rails-oracle.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +166,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

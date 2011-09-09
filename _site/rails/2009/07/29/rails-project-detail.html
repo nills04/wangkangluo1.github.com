@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>项目说明 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,107 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2009/07/29/rails-project-detail.html'>项目说明</a></h1>
+  <span class='date'>2009-07-29</span>
+  <div class='body'><h2>工作流</h2>
+<pre>
+#经考查,工作流引擎ruote是异步机制,无法保证业务实体与待办事项的处于同一事务
+#因此,改用自己定义的流程程序
+#相关流程代码放置在event.rb中
+</pre>
+<h2>枚举值</h2>
+<pre>
+#枚举值统一放置在config/initializes/enum.rb中
+script/console
+#获取"来电目的",返回值可作为option_for_select方法的参数
+&gt;&gt; Enum.aim
+=&gt; [["求助", "1"], ["投诉", "2"], ["咨询", "3"], ["建议", "4"], ["举报", "5"], ["其他", "9"]]
+#获取value=1的来电目的
+&gt;&gt; Enum.aim 1
+=&gt; "求助"
+</pre>
+<pre>
+#页面调用1
+select:
+f.select :agree Enum.sf
+radio:
+f.radio_enum :xingbie, 'sex'
+#页面调用2(字段名与枚举类型名相同)
+select:
+f.select :aim
+radio:
+f.radio_enum :sex
+
+#查看页面调用
+@call.agree_enum_sf
+#查看页面调用(字段名与枚举类型名相同)
+@call.aim_enum
+</pre>
+<h2>多行文本内容查看</h2>
+<pre>
+#页面显示时应调用，以支持换行的显示(处理过程、往来记录的不用换行)
+=simple_format @conversation.content
+</pre>
+<h2>日期格式</h2>
+<pre>
+#统一放置在config/initializes/datetime_format.rb中
+ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
+  :without_year =&gt; "%m-%d %H:%M:%S"
+)
+#创建时间格式化为"03-23 10:10:10"
+created_at.to_s(:without_year)
+#注意如果是日期类型的，应将格式放在
+ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(
+  ::short =&gt; "%Y-%m-%d"
+)
+</pre>
+
+<pre>
+#注意：
+#日期在页面显示时，要调用d方法，传入日期
+#避免连接Oracle时，显示为英文格式
+d conversation.finished_date
+</pre>
+<h2>Rails核心方法重载</h2>
+<p>统一放在config/initializers目录下</p>
+<pre>
+#对于视图层方法的重构放在view_helper.rb
+</pre>
+<h2>防止Form重复提交</h2>
+<p>项目中form提交方式分两种</p>
+<ol>
+	<li>普通提交，提交按钮调用link_to_submit方法，可参考users/new.haml</li>
+	<li>ajax后台提交，提交按钮调用link_to_remote_submit方法，可参考roles/new.haml</li>
+</ol>
+<p>两个方法都支持参数label，用于指定按钮显示名称，默认为&quot;保存&quot;<br />
+如link_to_submit(:commit)，则显示&quot;提交&quot;</p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/07/29/rails-project-detail.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +155,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

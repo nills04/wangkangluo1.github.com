@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>虚拟化开发环境 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          <div class='post'>
+  <h1><a href='/linux/2011/03/03/vagrant-virtual-develop-enviroment.html'>虚拟化开发环境</a></h1>
+  <span class='date'>2011-03-03</span>
+  <div class='body'><p><a href="https://github.com/saberma/shopqi">ShopQi</a> 中应用到的技术越来越多，开发环境的搭建变得越来越繁琐，这对开源项目的团队协作是相当不利的<br />
+试想，每个程序员的偏好都不同，所使用的操作系统，编辑器都是五花八门的，在开发过程中由于开发环境不一致出现问题的不在少数，调试难度也大</p>
+<p>所以，很多公司要求所有的开发机器不能随意安装软件，要保持开发环境高度一致<br />
+这种强制限制虽然让人感到不自由，但在公司做软件，也算情有可原</p>
+<p>而做开源项目就不同了，我们要尽可能提供便利，减少安装过程对原有环境的影响<br />
+要实现这一目标是非常困难的，还好，现在有了Vagrant</p>
+<h2>Vagrant</h2>
+<p><img src="/images/article/develop/vagrant.png" alt="" /></p>
+<p>Vargant是构建虚拟化开发环境的工具，它是用ruby开发的，并以gem方面发布，它会帮我们</p>
+<ol>
+	<li>创建一个Ubuntu10.04版本的32位VirtualBox虚拟机，并应用chef安装项目所需的ruby、数据库、应用服务器程序等</li>
+	<li>将宿主机项目所在的目录与虚拟机共享，我们在宿主机用喜欢的编辑器修改程序，虚拟机中的开发环境可以立即读取到</li>
+</ol>
+<p>这样就可以保证项目组成员的开发环境是一致的,不一定是rails项目才适用,java php或其他的都是可以使用vagrant</p>
+<p>有时候,我们需要跟进开发多个项目,有的用java,有的用ruby,有的使用mysql,有的使用mongodb<br />
+把这些都装起来也没问题,但是有点浪费性能了,同一时间我们只会开发一个项目<br />
+用vagrant我们可以很好的解决这类问题,每个项目一个虚拟机,需要时才启动</p>
+<h3>下载</h3>
+<p>虚拟机的操作系统镜像文件是经过定制的，在vargant中引入的镜像文件称为&quot;Box&quot;<br />
+我们先下载这个镜像文件，地址如下</p>
+<blockquote>
+<p><a href="http://files.vagrantup.com/lucid32.box">http://files.vagrantup.com/lucid32.box</a><br />
+假设下载后放至~/lucid32.box</p>
+</blockquote>
+<p>同时需要下载VirtualBox程序，并安装</p>
+<blockquote>
+<p><a href="http://www.virtualbox.org/wiki/Downloads">http://www.virtualbox.org/wiki/Downloads</a></p>
+</blockquote>
+<h3>安装</h3>
+<p>安装前请确保宿主机已经安装了ruby和rubygem</p>
+<pre>
+gem install bundler vagrant --no-ri --no-rdoc</pre>
+<h3>创建虚拟机</h3>
+<p>先引入刚才下载的镜像文件，作为vagant管理下的一个box，以后每次要生成一个用于开发的虚拟机，都会从这个box中复制出来</p>
+<pre>
+vagrant box add lucid32 ~/lucid32.box
+#进入项目目录
+cd ~/Documents/shopqi
+#初始化，生成配置文件Vagrantfile
+vagrant init lucid32
+#生成项目虚拟机
+vagrant up</pre>
+<p>等一会儿，一个ubuntu的虚拟机就建好了</p>
+<h3>在虚拟机上安装开发环境</h3>
+<p><img src="/images/article/vagrant/pstree.png" alt="" /></p>
+<p>vagrant可以根据chef指定的cookbook recipe进行安装，关于chef的介绍可以参考 <a href="/linux/2011/01/27/chef-for-automate-deploy.html">应用chef构建服务器集群自动化部署与管理</a><br />
+这里采用的是不依赖chef服务器的chef-solo方式，recipe采用 <a href="https://github.com/saberma/shopqi">ShopQi</a> 服务器部署的cookbook<br />
+指定recipe，需要修改Vagrantfile，增加以下内容</p>
+<blockquote>
+<p>config.vm.provision :chef_solo do |chef|<br />
+　chef.recipe_url = &#8220;https://dl.dropbox.com/u/19519145/shopqi/chef-solo.tar.gz&#8221;<br />
+　chef.add_recipe &#8220;develop&#8221;<br />
+end</p>
+</blockquote>
+<p>chef-solo.tar.gz文件是包含cookbooks集合的压缩包</p>
+<pre>
+#进入cookbooks所在目录后运行命令
+tar zcvf chef-solo.tar.gz ./cookbooks</pre>
+<p>develop cookbook会引入开发机所需要的依赖recipe， <a href="https://github.com/saberma/chef-repo/blob/master/cookbooks/develop/recipes/default.rb">查看内容</a></p>
+<h3>启动虚拟机</h3>
+<pre>
+vagrant up
+#如果已经启动，只想更新或者调试recipe，运行vagrant provision</pre>
+<p>如果你和我一样,喜欢rvm来管理ruby版本,并安装了除system自带的ruby,则需要修改/etc/profile,否则gems会被安装在自带ruby之下<br />
+参考 <a href="http://rvm.beginrescueend.com/integration/vagrant/">http://rvm.beginrescueend.com/integration/vagrant/</a></p>
+<h3>ssh登录虚拟机</h3>
+<p>之后，我们可以登录虚拟机，像以前一样执行rake等命令</p>
+<pre>
+vagrant ssh
+#查看项目目录，会发现与宿主机的当前目录内容一致
+ls /vagrant</pre>
+<p>刚才引入的cookbook包含了nginx recipe，所以我们可以看看虚拟机上nginx是否能正常访问了</p>
+<pre>
+wget -qO- 127.0.0.1:3000</pre>
+<p>結果返回:</p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+&lt;/head&gt;
+&lt;body bgcolor="white" text="black"&gt;
+&lt;center&gt;&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>说明能正常访问，为了能在宿主机上用浏览器访问它，我们需要进行端口映射<br />
+修改VagrantFile，加入以下内容:</p>
+<blockquote>
+<p>Vagrant::Config.run do |config|<br />
+　# Forward guest port 3000 to host port 8088 and name the mapping &#8220;web&#8221;<br />
+　config.vm.forward_port(&#8220;web&#8221;, 3000, 8088)<br />
+end</p>
+</blockquote>
+<p>用浏览器打开 <a href="http://127.0.0.1:8088">http://127.0.0.1:8088</a> 就可以访问了</p>
+<h3>打包发布</h3>
+<p>现在开发环境已经安装好了，整个过程非常高效。更进一步，我们可以把已经做好的环境打包成镜像文件，分发给其他人，他们就可以瞬间建好开发环境了。</p>
+<p>准备pkg文件,此文件只用于定义映射端口,会被合并至Vagrantfile文件中,内容一般为</p>
+<blockquote>
+<p>Vagrant::Config.run do |config|<br />
+  #Forward nginx<br />
+  config.vm.forward_port(&#8220;web&#8221;, 3000, 8088)<br />
+end</p>
+</blockquote>
+<pre>
+#执行打包
+vagrant package --vagrantfile Vagrantfile.pkg</pre>
+<p>执行后当前目录会生成package.box文件</p>
+<h3>关闭虚拟机</h3>
+<pre>
+vagrant halt</pre>
+<h2>测试</h2>
+<h3>单元测试</h3>
+<p>还是跟以前一样</p>
+<h3>验收测试</h3>
+<p>由于cucumber使用的@javascript，需要打开浏览器测试ajax。而虚拟机并未安装桌面，此测试进行不了。<br />
+开源社区中有不少技术可以进行headless后台测试，但都不成熟.</p>
+<p>所以,我们只能在宿主机上进行这样的测试了,这样的话,宿主机又要安装项目的相关插件,这可不少.<br />
+有什么办法能让插件跟着项目跑,而不把插件安装到系统上呢?</p>
+<p>答案是可以的,我们在虚拟机上使用bundle install安装插件的时候,指定参数&#8212;path vendor/bundle，将插件安装在项目的vendor/bundle目录，这样在宿主机就不用再安装这些插件了。<br />
+还有,我们的测试数据库还在虚拟机上,还得修改 <code>Vagrantfile</code> ,把mongodb,redis-server,nodejs等服务的端口映射至宿主机<br />
+直接在宿主机上运行以下命令就可以测试了</p>
+<pre>
+bundle exec cucumber features</pre>
+<p>注意:将gems打包后,会导致在虚拟机运行rails各种命令时,速度巨慢,原因是virtaulbox共享目录的bug:随着目录内文件数的增长,对共享目录的访问会很慢<br />
+解决方案是应用nfs共享目录,具体查看这里 <a href="http://vagrantup.com/docs/nfs.html">http://vagrantup.com/docs/nfs.html</a> 和 <a href="http://vagrantup.com/docs/host_only_networking.html">http://vagrantup.com/docs/host_only_networking.html</a></p>
+<pre>
+#宿主机需要安装nfs服务
+sudo apt-get install nfs-kernel-server</pre>
+<h3>进入rails控制器</h3>
+<p>经过上面的处理,插件已经安装好了,但是由于rails并未安装进系统,使用以下命令是进不了控制台的</p>
+<pre>
+rails c</pre>
+<p>得在项目目录下,运行</p>
+<pre>
+script/rails c</pre>
+<h2>报错</h2>
+<h3>找不到client.pem</h3>
+<blockquote>
+<p>[default] I cannot read /etc/chef/client.pem, which you told me to use to sign requests!: stderr<br />
+[default]  (: stderr<br />
+[default] Chef::Exceptions::PrivateKeyMissing: stderr</p>
+</blockquote>
+<p>这也太奇怪了，用的是chef-solo方式，而非chef-server，怎么也需要client.pem?<br />
+原来是部分cookbook使用了search方法，此方法用于从chef-server中查找相应的信息</p>
+<p>解决方法是在cookbook中加入判断条件，开发环境部署时不调用search，生产环境才调用</p>
+<blockquote>
+<p>node[:instance_role]</p>
+</blockquote>
+<h3>&#8216;unknown&#8217;: unknown terminal type.</h3>
+<p>很不幸，这是vagrant的一个bug，详情参考 <a href="https://github.com/mitchellh/vagrant/commit/77a1b9a6efe4f5cdc99343e844835fc790a64c28">commit#77a1b9a6efe4f5cdc993</a><br />
+解决方法，更新vagrant至0.7.3，不过，这个版本还没有发布，只能先手动修改本地gem的代码了</p>
+<h3><span class="caps">FATAL</span>: No cookbook found in [&#8220;/tmp/vagrant-chef/cookbooks-0&#8221;, &#8220;/tmp/vagrant-chef/cookbooks&#8221;], make sure cookbook_path is set correctly.</h3>
+<p>这是vagrant的一个bug,详情请看<br />
+<a href="https://github.com/mitchellh/vagrant/issues#issue/308">https://github.com/mitchellh/vagrant/issues#issue/308</a><br />
+<a href="https://github.com/mitchellh/vagrant/issues/closed#issue/297">https://github.com/mitchellh/vagrant/issues/closed#issue/297</a></p>
+<p>不影响使用,作者正在修复&#8230;</p>
+<h3>运行chef-solo过程的其他错误?</h3>
+<pre>
+#登录虚拟机
+vagrant ssh
+#在虚拟机运行chef-solo,显示更显示的debug信息
+cd /tmp/vagrant-chef
+sudo chef-solo -c solo.rb -j dna.json -l debug</pre>
+<p>如果希望vagrant命令运行时都显示详细信息,可以配置Vagrantfile</p>
+<blockquote>
+<p>config.vm.provision :chef_solo do |chef|<br />
+　chef.log_level = :debug<br />
+end</p>
+</blockquote>
+<h2>参考资源</h2>
+<p><a href="http://vagrantup.com/">Vagrant官网</a><br />
+<a href="http://vagrantup.com/docs/provisioners/chef_solo.html">chef_solo配置</a><br />
+<a href="http://tickets.opscode.com/browse/CHEF-1115">client.pem error</a><br />
+<a href="https://github.com/fnichol/wiki-notes/wiki/Creating-An-Ubuntu-10.10-x32-Vagrant-Box">Creating An Ubuntu 10.10 x32 Vagrant Box</a><br />
+<a href="https://wiki.csinitiative.com/display/tri/Setting+up+a+Vagrant+VM+for+TriSano">Setting up a Vagrant VM for TriSano</a><br />
+<a href="http://wiki.opscode.com/display/chef/Vagrant">opscode vagrant</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/linux/2011/03/03/vagrant-virtual-develop-enviroment.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

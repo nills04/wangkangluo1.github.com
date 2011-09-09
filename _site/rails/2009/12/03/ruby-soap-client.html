@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>soap客户端 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,153 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2009/12/03/ruby-soap-client.html'>soap客户端</a></h1>
+  <span class='date'>2009-12-03</span>
+  <div class='body'><h2>选择</h2>
+<p>ruby带有soap4r的插件，可以用于访问web service服务接口，但不支持basic_auth、WS-Security<br />
+因此选用handsoap作为客户端插件</p>
+<h2>安装</h2>
+<pre>
+#curb在window下安装很麻烦，改为指定httpclient
+#sudo gem install handsoap curb nokogiri httpclient --no-ri --no-rdoc
+sudo gem install handsoap nokogiri httpclient --no-ri --no-rdoc
+#如果安装curb过程报cannot find -lcur错误，则运行
+sudo apt-get install libcurl4-openssl-dev
+</pre>
+
+<pre>
+#environment.rb中加入
+config.gem 'handsoap', :lib =&gt; 'handsoap', :source =&gt; "http://gems.github.com"
+
+#curb在window下安装很麻烦，改为指定httpclient，environment.rb中最底部加入
+Handsoap.http_driver=:httpclient
+</pre>
+<h2>使用</h2>
+<pre>
+#生成客户端类
+script/generate handsoap http://192.168.1.20:8081/cmis/webService/ciisStatService?wsdl
+</pre>
+<p>配置管理员需要配置的地方在这里(用户、密码、接口地址)</p>
+<pre>
+#生成的连接地址加入environments/production.rb中
+CIIS_USERNAME = 'cogent'
+CIIS_PASSWORD = 'cogent'
+
+CIIS_STAT_SERVICE_IMPL_SERVICE_ENDPOINT = {
+  :uri =&gt; 'http://192.168.1.20:8081/cmis/webService/ciisStatService',
+  :version =&gt; 1
+}
+</pre>
+
+<pre>
+#script/console
+s = Ciis::PopService.find_pop '%'
+#获取列表对象
+s.list
+#获取列表对象中的内容
+s.list.first.name
+#获取属性值
+s.size
+</pre>
+<h2>调试</h2>
+<p>使用soapui访问webservice接口，确保服务正常<br />
+为了监控客户端与服务器的交互内容，可使用tcpmon架设代理</p>
+<p><a href="http://sourceforge.net/projects/soapui/files/soapui/3.0.1">soapui</a><br />
+<a href="https://tcpmon.dev.java.net">tcpmon</a></p>
+<p><a href="http://boyun.sh.cn/blog/?p=1076">soapui简要介绍</a></p>
+<p>注意，连接接口时要设置用户名密码，双击某个接口方法的请求(一般为request1)，点击弹出的右边窗口左下方的[Aut]，输入用户名、密码<br />
+然后在Request1窗口中点击右键，选择[Add <span class="caps">WSS</span> Username Token]，会看到请求的xml中增加了用户名、密码</p>
+<h2>问题</h2>
+<pre>
+#按照handsoap官方说明无法实现ws-security的访问
+#提示Security processing failed (actions mismatch)
+#经过尝试，以下调用是成功的
+  def on_create_document(doc)
+    #register namespaces for the request
+    doc.alias 'tns', 'http://ws.stat.wsif.cogent.com/'
+    doc.alias 's', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'
+    header = doc.find("Header")
+    header.add "s:Security" do |s| 
+      #增加此节点，否则会报错
+      s.add "s:UsernameToken" do |t|                                                                                                                         
+        t.add "s:Username", "cogent"
+        t.add "s:Password", "cogent"
+      end 
+    end 
+  end
+</pre>
+<p>［第二个问题］开发环境下报错：ArgumentError: A copy of Ciis::PopService has been removed from the module tree but is still active!</p>
+<pre>
+#重现步骤
+script/console
+  Ciis::PopService.find_pop('%') 
+  reload!
+  #再次执行报错
+  Ciis::PopService.find_pop('%')
+</pre>
+<p>产品环境下没问题，但由于开发环境下class会被缓存，而handsoap静态方法引用了实例对象<br />
+在handsoap源代码中发现以下语句</p>
+<pre>
+@@instance = {}
+def self.instance
+  @@instance[self.to_s] ||= self.new
+end 
+def self.method_missing(method, *args, &amp;block)
+  if instance.respond_to?(method)
+    instance.__send__ method, *args, &amp;block
+  else
+    super
+  end 
+end
+</pre>
+<p>因此在开发环境下需要重载instance静态方法</p>
+<pre>
+#config/initializers/fixed_handsoap_reload_error.rb
+unless development?
+  module Handsoap
+    class Service
+      def self.instance
+        self.new
+      end 
+    end 
+  end 
+end
+</pre>
+
+<pre>
+#测试是否解决问题了
+script/console
+  #确保每次获取的实例对象不一样
+  Ciis::PopService.instance
+  Ciis::PopService.instance
+</pre></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/12/03/ruby-soap-client.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +201,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

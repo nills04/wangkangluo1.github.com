@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>如何为https网站加入ssl证书 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,77 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/other/2011/08/11/how-to-choose-ssl-certificates.html'>如何为https网站加入ssl证书</a></h1>
+  <span class='date'>2011-08-11</span>
+  <div class='body'><p>要提高网站与客户端浏览器之间的安全性，可以基于https协议对传输的数据进行加密<br />
+https协议采用公钥私钥加密算法进行加密，服务器用私钥对网页进行加密后，连同公钥一起发给浏览器<br />
+由于，公钥是服务器发送的，浏览器认为它不可信任，就会提示用户选择是否进一步操作<br />
+这对用户来说非常不友好，觉得这个网站不安全</p>
+<p>为了解决这个问题，我们需要将公钥制作成数字证书，放到专门的认证机构(ca)</p>
+<p>认证机构有很多家，比如</p>
+<ol>
+	<li><a href="http://www.geotrust.com">http://www.geotrust.com</a></li>
+	<li><a href="http://www.verisign.com">http://www.verisign.com</a></li>
+	<li><a href="http://www.rapidssl.com">http://www.rapidssl.com</a></li>
+</ol>
+<p>这些都是收费的，免费的只有一家 <a href="http://www.startssl.com">http://www.startssl.com</a> ，但是firefox3.5不支持，所以不考虑</p>
+<p>不了解的同学可以看下 <a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html">数字签名是什么</a></p>
+<h2>认证类型</h2>
+<p>各个认证机构提供的类型也有很多不一样，按认证范围可以分为</p>
+<ol>
+	<li>域名型，针对域名进行认证(快速认证)</li>
+	<li>企业型，同时认证公司名称等信息(完整认证)</li>
+</ol>
+<p>据说rapidssl不支持企业认证</p>
+<p>按认证的域名可以分为</p>
+<ol>
+	<li>单域名 www.example.com</li>
+	<li>多域名 www.example1.com, www.example2.com</li>
+	<li>泛二级域名 *.exmaple.com</li>
+	<li>多个二级域名 a.example.com, b.example.com</li>
+</ol>
+<p>此外还有赔付保障(证书被破解找机构赔)、移动设备支持情况、木马扫瞄等功能类型的差异，没什么用</p>
+<p>在这里我们主要关注泛二级域名，报价(元/每年)</p>
+<ol>
+	<li>rapidssl 1550</li>
+	<li>GeoTrust 6850</li>
+	<li>VeriSign 38000</li>
+</ol>
+<p>以上报价由&quot;www.trustasia.com&quot;:www.trustasia.com 提供<br />
+GeoTrust,VeriSign只能是企业级认证的产品才包含泛二级域名类型，所以价格贵很多</p>
+<p>rapidssl符合要求，价格较低，还有优惠</p>
+<ol>
+	<li><a href="http://www.clickssl.com/rapidssl/rapidsslwildcard.aspx">clickssl 139$</a></li>
+	<li><a href="https://www.servertastic.com/rapidssl/">servertastic 139$</a></li>
+	<li><a href="http://www.cheapssls.com/geotrust-ssl-certificates/rapidssl-wildcard.html">cheapssls 148$</a></li>
+</ol></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/other/2011/08/11/how-to-choose-ssl-certificates.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +125,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

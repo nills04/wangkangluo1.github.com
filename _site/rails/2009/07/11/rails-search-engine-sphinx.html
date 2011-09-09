@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>全文检索Sphinx | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,156 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2009/07/11/rails-search-engine-sphinx.html'>全文检索Sphinx</a></h1>
+  <span class='date'>2009-07-11</span>
+  <div class='body'><p><a href="http://saberma.github.com/2009/07/12/rails-search-engine-ferret.html">参考全文检索Ferret</a><br />
+以下内容不再使用</p>
+<h1>技术概览</h1>
+<ul>
+	<li>全文检索引擎采用:sphinx(0.9.8rc2)</li>
+</ul>
+<ul>
+	<li>中文分词:libmmseg(0.7.3)</li>
+</ul>
+<ul>
+	<li>Rails调用引擎的插件:thinking-sphinx(0.9.5)</li>
+</ul>
+<p>注意,当前使用的thinking-sphinx与官方的不一样,增加了中文分词的配置,修正delta index无法自动更新的问题</p>
+<h1>安装</h1>
+<h2>libmmseg</h2>
+<pre>
+sudo apt-get install g++
+cd ~
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/mmseg-0.7.3.tar.gz
+tar zxvf mmseg-0.7.3.tar.gz 
+cd mmseg-0.7.3 
+./configure
+make
+sudo make install
+
+#安装ruby扩展
+cd ruby
+cp /usr/local/include/mmseg/*.h .   
+cp ../src/*.h .   
+cp ../src/css/*.h .   
+ruby extconf.lin.rb
+make
+sudo make install
+
+注意:如果在这一步出错,且出错提示为：
+css/UnigramCorpusReader.cpp:89: error: ’strncmp’ was not declared in this scope
+则需手工编辑.src/css目录下UnigramCorpusReader.cpp 文件,在其第一行加上
+#include &lt;string.h&gt;
+然后重新 make,即可通过
+</pre>
+<p>注:已生成的词库uni.lib放在项目的lib目录下(值班室项目已经放置此文件了)</p>
+<h2>sphinx</h2>
+<pre>
+#"下载sphinx"
+cd ~
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/sphinx-0.9.8-rc2.tar.gz
+tar zxvf sphinx-0.9.8-rc2.tar.gz 
+cd sphinx-0.9.8-rc2 
+sudo apt-get install patch
+#下载中文补丁
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/sphinx-0.98rc2.zhcn-support.patch 
+patch -p1 &lt; sphinx-0.98rc2.zhcn-support.patch 
+#下载防crash补丁
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/fix-crash-in-excerpts.patch
+patch -p1 &lt; fix-crash-in-excerpts.patch 
+
+./configure
+make 
+sudo make install
+
+注意：如果在这一步出现
+/usr/local/include/mmseg/freelist.h:22: error: ‘strlen’ was not declared in this scope
+的错误，手工修改 /usr/local/mmseg/include/mmseg/freelist.h
+在上面添加
+#include &lt;string.h&gt;
+</pre>
+<h2>安装thinking-sphinx</h2>
+<p>(此步骤已经集成进［Rails说明］中［获取源代码］一节，不需要再独立执行)</p>
+<pre>
+git submodule init
+git submodule update
+</pre>
+<p>如果安装时报错，按以下步骤处理<br />
+<pre><br />
+#删除.gitmodules,.git/config中的submodule配置<br />
+#删除thinking-sphinx目录<br />
+git rm &#8212;cached vendor/plugins/thinking-sphinx<br />
+sudo rm -r vendor/plugins/thinking-sphinx<br />
+git submodule add -b v0.9.5chinese git://github.com/saberma/thinking-sphinx.git vendor/plugins/thinking-sphinx<br />
+</pre></p>
+<h1>启动引擎</h1>
+<p>(此步骤应在［Rails说明］中［获取源代码］之后操作)</p>
+<pre>
+#生成sphinx配置文件
+rake ts:config
+#建立索引
+rake ts:index
+#启动引擎
+rake ts:start
+</pre>
+<h1>测试引擎</h1>
+<p>(此步骤应在［Rails说明］中［获取源代码］之后操作)</p>
+<pre>
+script/console
+c = Call.last
+c.callnumber = '13911112222'
+c.save
+#可以看到后台输出更新delta index
+Sphinx 0.9.8-rc2 (r1234)
+Copyright (c) 2001-2008, Andrew Aksyonoff
+using config file '/home/mahb/Documents/zbs/config/development.sphinx.conf'...
+indexing index 'call_delta'..."防crash补丁":http://www.coreseek.com/uploads/sources/fix-crash-in-excerpts.patch 
+collected 1 docs, 0.0 MB
+sorted 0.0 Mhits, 100.0% done
+total 1 docs, 31 bytes
+total 0.031 sec, 1014.20 bytes/sec, 32.72 docs/sec
+rotating indices: succesfully sent SIGHUP to searchd (pid=5812)
+#开始查询
+Call.search '13911112222'
+#这时可以看到相应的记录
+</pre>
+<h1>使用说明</h1>
+<p><a href="http://ts.freelancing-gods.com/usage.html">参考资料</a><br />
+<pre><br />
+#或参考call.rb<br />
+</pre></p>
+<h1>相关参考资料</h1>
+<ul>
+	<li><a href="http://www.kuqin.com/searchengine/20080525/8886.html">使用libmmseg实现Ruby的中文分词功能</a></li>
+	<li><a href="http://www.coreseek.com/forum/index.php?action=vthread&amp;forum=2&amp;topic=17">Rails程序员Sphinx中文全文检索安装指南</a></li>
+</ul></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/07/11/rails-search-engine-sphinx.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +204,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

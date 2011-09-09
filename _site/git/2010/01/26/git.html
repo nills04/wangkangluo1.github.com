@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>Git使用 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,103 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/git/2010/01/26/git.html'>Git使用</a></h1>
+  <span class='date'>2010-01-26</span>
+  <div class='body'><h2>基本概念</h2>
+<h3>存储</h3>
+<blockquote>
+<p>WorkSpace ==&gt; Git Index ==&gt; Git Local Repository ==&gt; Git Remote Repository<br />
+Git数据在各个存储空间中的迁徙示意图</p>
+</blockquote>
+<p><img src="/images/article/git-transport.png" alt="" /></p>
+<h3>submodule</h3>
+<p>主项目中可能需要使用其他项目(比如juggernaut，简称项目B)的功能，将项目B直接拷贝过来当然可行<br />
+但这样的话，项目B以后更新的内容就无法及时更新过来了</p>
+<p>正确的做法应该是把项目B作为主项目的submodule，通过以下语句引入</p>
+<pre>
+git submodule add git://github.com/maccman/juggernaut.git vendor/others/juggernaut</pre>
+<h2>常用命令</h2>
+<h3>基本</h3>
+<div class="highlight"><pre><code class="bash"><span class="c">#检查当前修改、新增的文件</span>
+git status 
+
+<span class="c">#新增分支，对于大范围的修改，应先使用此命令创建分支</span>
+git checkout -b 分支名
+
+<span class="c">#显示所有分支列表，前面有星号的为当前分支</span>
+git branch
+
+<span class="c">#切换至另一个分支</span>
+git checkout 分支名
+
+<span class="c">#检查修改内容</span>
+git diff
+git diff --color
+
+<span class="c">#将新增的文件加入版本控制</span>
+git add .
+
+<span class="c">#add之后，检查修改内容</span>
+git diff HEAD
+
+<span class="c">#提交。也可以使用git commit -a -m &#39;描述&#39;，此命令包含了git add .</span>
+git commit -m <span class="s1">&#39;修改内容的描述&#39;</span>
+
+<span class="c">#使用commit提交本地后，在保证所有测试用例通过的情况下，可以上传至远程版本服务器</span>
+git push
+<span class="c">#注意，如果别人已经有上传了新的改动至服务器，则应将远程版本同步下来</span>
+git pull
+<span class="c">#执行后，git会进行自动合并操作，失败的会提示用户手动合并(直接修改文件，并去掉git&lt;&lt;====等冲突标记)</span>
+<span class="c">#将修改过的文件重新commit后上传</span>
+git push
+
+<span class="c">#查看某个文件的修改历史</span>
+git log -p app/controllers/grids_controller.rb
+
+<span class="c">#获取以前版本的文件</span>
+git checkout 0d7371d574 public/open-flash-chart.swf
+<span class="c">#0d7371d574为commit号前的n位数值，此值可以通过查看文件的修改历史获取到</span>
+</code></pre>
+</div>
+<h3>对比差异</h3>
+<pre>
+#可视化左右分栏对比
+git difftool foo.rb</pre>
+<h3>冲突处理</h3>
+<p>当本地修改的代码与其他人员已提交的代码发生冲突时,git会显示需要手动合并的冲突文件<br />
+我们可以手动打开编辑冲突,当冲突文件多的时候就有点麻烦,其实git为我们提供了批量合并工具</p>
+<pre>
+#指定使用vimdiff进行编辑
+git mergetool --tool=vimdiff</pre>
+<p>以上命令会依次显示待编辑的窗口,每个窗口分三个子窗口,依次为local,merge,remote文件<br />
+中间子窗口的merge文件就是我们要编辑命令的文件了,其他两个不用修改</p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/git/2010/01/26/git.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +151,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

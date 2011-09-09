@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>在Ubuntu环境下安装最土团购开源php程序 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,111 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/php/2010/12/18/zuitu-tuangou-php-install-in-ubuntu.html'>在Ubuntu环境下安装最土团购开源php程序</a></h1>
+  <span class='date'>2010-12-18</span>
+  <div class='body'><h2>下载</h2>
+<p>在最土官网下载<br />
+<a href="http://notice.zuitu.com/down/ZuituGo_V1.6.tar.gz">http://notice.zuitu.com/down/ZuituGo_V1.6.tar.gz</a></p>
+<h2>安装mysql数据库</h2>
+<p>sudo apt-get install mysql-server</p>
+<h2>安装php环境</h2>
+<pre>
+#apache
+sudo apt-get install apache2
+#php5(默认带有mbstring组件)
+sudo apt-get install php5
+#配置APACHE+PHP
+sudo apt-get install libapache2-mod-php5
+sudo /etc/init.d/apache2 restart
+#mysql相关
+sudo apt-get install libapache2-mod-auth-mysql
+sudo apt-get install php5-mysql
+sudo /etc/init.d/apache2 restart</pre>
+<h2>安装程序</h2>
+<p>将压缩包中的wwwroot下的内容解压至/var/www目录下</p>
+<blockquote>
+<p>如需修改apache webroot黙认路径，请修改/etc/apache2/sites-enabled/000-default文件</p>
+</blockquote>
+<pre>
+#修改目录归属于当前用户saberma
+chown saberma /var/www
+#修改目录可写权限
+chmod a+w static/user
+chmod a+w static/team
+chmod a+w include/compiled
+chmod a+w include/configure
+chmod a+w include/data/
+chmod a+w include/template/</pre>
+<h2>配置</h2>
+<p>浏览器打开 <code>http://localhost/install.php</code><br />
+输入数据库密码后点击安装即可</p>
+<p>安装完成后需要手动删除install.php</p>
+<pre>
+rm /var/www/install.php</pre>
+<h2>调试</h2>
+<h3>打开日志</h3>
+<p>为方便初期调试错误，需要打开错误日志输出功能<br />
+修改 <code>/etc/php5/apache2/php.ini</code> 的以下内容</p>
+<blockquote>
+<p>error_reporting = E_ALL<br />
+display_error = on<br />
+html_errors = on<br />
+log_errors = off</p>
+</blockquote>
+<h3>查看php环境信息</h3>
+<p>在网站根目录中新增phpinfo.php文件，内容如下</p>
+<blockquote>
+<p>&lt;?php phpinfo()?&gt;</p>
+</blockquote>
+<p>浏览器打开phpinfo.php，即可看到环境信息</p>
+<h2>部署</h2>
+<p>一般情况下，PHP的虚拟空间只能使用ftp，而项目代码使用git进行版本控制<br />
+为了让git管理下的项目代码能够直接发送至ftp，需要安装 <a href="http://github.com/resmo/git-ftp">git-ftp</a></p>
+<pre>
+#ubuntu10.04下的安装过程
+sudo -s
+add-apt-repository ppa:resmo/git-ftp
+aptitude update
+aptitude install git-ftp
+exit</pre>
+<p>配置ftp地址、用户名及密码</p>
+<pre>
+git config git-ftp.user saberma
+git config git-ftp.url ftp.example.com
+git config git-ftp.password secr3t</pre>
+<p>修改文件后，使用以下命令部署</p>
+<blockquote>
+<p>git ftp push</p>
+</blockquote>
+<h2>参考资源</h2>
+<p><a href="http://www.zuitu.com/download_new.html">最土官网下载说明</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/php/2010/12/18/zuitu-tuangou-php-install-in-ubuntu.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +159,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

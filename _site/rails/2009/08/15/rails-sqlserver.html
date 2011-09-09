@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>SQLServer on Rails | 好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          <div class='post'>
+  <h1><a href='/rails/2009/08/15/rails-sqlserver.html'>SQLServer on Rails</a></h1>
+  <span class='date'>2009-08-15</span>
+  <div class='body'><h1>安装</h1>
+<h2>安装库</h2>
+<h3>安装unixODBC</h3>
+<pre>
+sudo apt-get install unixodbc unixodbc-dev
+</pre>
+<h3>安装sqlserver驱动freetds</h3>
+<pre>
+cd ~
+wget  http://cloud.github.com/downloads/saberma/saberma.github.com/freetds-stable.tgz
+tar -vxf freetds-stable.tgz
+cd freetds-0.82
+./configure --prefix=/usr/local/freetds --sysconfdir=/etc --with-tdsver=8.0
+sudo make
+sudo make install
+</pre>
+<h3>附配置文件内容</h3>
+<pre>
+#将config/etc下的文件拷贝至/etc
+cd ~/Documents/zbs
+sudo cp config/etc/* /etc
+</pre>
+<p>配置文件中的内容不需要修改，实际生产环境中才修改/etc/freetds.conf的SQL Server服务器地址<br />
+注意：不要在配置文件中有多余的空格，否则就算配置正确，unixODBC也会报以下奇怪的错误信息</p>
+<pre>
+[IM002][unixODBC][Driver Manager]Data source name not found, and no default driver specified
+[ISQL]ERROR: Could not SQLConnect
+</pre>
+<p>以下为config/etc下的文件内容</p>
+<p>/etc/odbc.ini</p>
+<pre>
+[SQL2000DSN]
+Driver=FreeTDS
+Description=ODBC Connection via FreeTDS                                                                                                                      
+Trace=No
+Servername=SQL2000HOST
+</pre>
+<p>/etc/odbcinst.ini</p>
+<pre>
+[FreeTDS]
+Description=TDS driver (Sybase/MS SQL)
+Driver=/usr/local/freetds/lib/libtdsodbc.so
+CPTimeout=
+CPReuse=
+FileUsage=1
+</pre>
+<p>/etc/freetds.conf</p>
+<pre>
+[SQL2000HOST]
+  host = 192.168.1.13
+  port = 1433
+  tds version = 8.0 
+  client charset = UTF-8
+</pre>
+<h3>测试</h3>
+<pre>
+#测试是否连接成功,tsql命令在freetds子目录bin下
+cd /usr/local/freetds
+TDSVER=8.0 bin/tsql -H 192.168.1.13 -U msg -p 1433
+#提示你输入密码时，输入msg
+#提示1 &gt;，表示正常连接至数据库了,输入exit关闭连接
+exit
+
+#测试使用配置文件的方式连接
+bin/tsql -S SQL2000HOST -U msg -p 1433
+#查看freetds.conf所在位置
+bin/tsql -C
+</pre>
+
+<pre>
+isql -v SQL2000DSN msg msg
+#unixODBC调试命令
+#查看unixODBC配置文件所在位置
+odbcinst -j
+#查看unixODBC已有DSN
+odbcinst -q -s
+</pre>
+<h2>安装ruby-odbc</h2>
+<pre>
+cd ~
+wget http://cloud.github.com/downloads/saberma/saberma.github.com/ruby-odbc-0.9996.tar.gz
+tar -xvzpf ruby-odbc*gz
+cd ruby-odbc*[0-9]*
+ruby extconf.rb
+sudo make
+#如果上面命令出错,报nothing to be done for all , 则执行: make clean
+sudo make install
+</pre>
+<h2>安装gems</h2>
+<pre>
+sudo gem install dbi --version 0.4.0 --no-ri --no-rdoc
+sudo gem install dbd-odbc --version 0.2.4 --no-ri --no-rdoc
+sudo gem install rails-sqlserver-2000-2005-adapter --no-ri --no-rdoc
+</pre>
+<h2>测试</h2>
+<pre>
+script/console
+#获取tbl_smsendtask表信息,正常的话会返回Msg所有的字段
+Msg
+#看一下中文显示是否正常
+Msg.last
+#修改为中文
+m = Msg.last
+m.update_attribute :SM_Content, '中文字符'
+#查看修改是否生效
+Msg.all.collect {|m| m.SM_Content}
+</pre>
+<h2>配置信息</h2>
+<pre>
+#配置企业信息号,短信机系统标识
+#或者配置短信内容模板
+vim app/models/msg.rb
+</pre>
+<h2>定时器</h2>
+<p><a href="http://github.com/javan/whenever/tree/master">whenever项目</a></p>
+<pre>
+#配置定时器规则
+vim config/schedule.rb
+#查看定时规则
+whenever
+#将定时规则写入cron
+whenever -w
+#重启定时器让定时任务生效
+sudo /etc/init.d/cron restart
+
+
+#用cron执行定时任务时，会找不到oracle库（oracle安装在用户目录下,cron运行时有自己的用户），需要将下面这行
+/usr/lib/oracle/10.2.0.3/client/lib/
+#添加到 /etc/ld.so.conf 里并执行
+sudo ldconfig -v
+</pre>
+<h1>参考资料</h1>
+<p>以第一为准</p>
+<ol>
+	<li><a href="http://wiki.rubyonrails.org/database-support/ms-sql">Rail wiki db support</a></li>
+	<li><a href="http://www.not404.com/Howto_SQL2005_From_RailsOnFedora">Howto_SQL2005_From_RailsOnFedora</a></li>
+	<li><a href="http://www.freetds.org/userguide/serverthere.htm#SERVERTHERE.TSQL">FreeTDS排障</a></li>
+	<li><a href="http://toolmantim.com/thoughts/getting_rails_talking_to_sqlserver_on_osx_via_odbc">Getting Rails talking to SQLServer on <span class="caps">OSX</span> via <span class="caps">ODBC</span></a><br />
+注意,使用ODBC Administrator创建User DSN无法连接Datasource的话,尝试一下新增System <span class="caps">USDN</span></li>
+</ol>
+<pre>
+#如果isql -v SQL2000DSN1报以下错误
+[S1000][unixODBC][FreeTDS][SQL Server]Unable to connect to data source
+[01000][unixODBC][FreeTDS][SQL Server]Adaptive Server connection failed
+[01000][unixODBC][FreeTDS][SQL Server]Unexpected EOF from the server
+#修改/etc/odbc.ini中的TDS Version为TDS_Version(即将空格换为下划线)
+</pre></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/08/15/rails-sqlserver.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

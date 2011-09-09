@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>Vim使用 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,112 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/vim/2009/10/10/vim.html'>Vim使用</a></h1>
+  <span class='date'>2009-10-10</span>
+  <div class='body'><h2>安装</h2>
+<pre>
+sudo apt-get install libncurses-dev ncurses-term
+wget ftp://ftp.vim.org/pub/vim/unix/vim-7.2.tar.bz2
+tar -xvf vim-7.2.tar.bz2
+cd vim72
+./configure --enable-multibyte --enable-rubyinterp
+sudo make
+sudo make install
+
+#安装rails的vim插件
+git clone git://github.com/saberma/vimfiles.git ~/.vim
+ln -s ~/.vim/vimrc ~/.vimrc
+</pre>
+<p>#Mac操作系统下需要安装MacVIM,否则Fuzzy_finder无法使用(原生的vim没有包含ruby)<br />
+Download MacVim. Then, in your ~/.bash_profile type in the following:<br />
+alias vim=”/Applications/MacVim.app/Contents/MacOS/Vim”</p>
+<h2>Vim常用命令</h2>
+<pre>
+#打开类似于textmate的查找文件功能,支持目录限制符/
+ctrl + t 
+#历史文件列表
+ctrl + b
+#刷新查找时显示的候选文件
+\r
+#打开浏览器查看Rails帮助
+shift + RR
+#打开浏览器查看Ruby帮助
+shift + RB
+
+#大小写转换
+#选中要转换的字符
+vw
+#转换为大写字母
+shift + u
+#转换为小写字母
+u
+
+#字符串前后增加双引号
+ysiw"
+#字符串前后双引号改为单引号
+cs"'
+#去掉字符串前后单引号
+ds'
+</pre>
+
+<pre>
+#格式化已识别的文件内容
+gg=G
+</pre>
+<h2>多窗口</h2>
+<p>在Normal模式下，按ctrl+n可以新开一个横向窗口<br />
+在按ctrl+t打开文件列表后，按CTRL+K可以新开一个纵向窗口</p>
+<p>ctrl+w+k可以将焦点切换至向上的窗口,k可以换为h、j、l等控制其他方向</p>
+<p>在打开的文件中，按ctrl+g可以查看文件所在位置</p>
+<h2>Vim的代码片段(snippet)</h2>
+<p>在eclipse中编写java时，输入main按下tab键时，eclipse会自动插入整段main方法<br />
+这就是IDE常用的snippet功能了,VIM当然也是支持的</p>
+<p>进入~/.vim，你会看到snippets目录，这里保存了所有的snippet<br />
+其子目录是文件类型名称，这样就可以区分不同类型文件使用不同的snippet</p>
+<p>里面的文件名称就是snippet的缩写，在文件中按缩写加tab，文件内容就出来了</p>
+<p>你可以定义自己的snippet，比如定义枚举项的snippet<br />
+创建snippets/ruby-rails/aen.snippet,内容如下:</p>
+<pre>
+&lt;+ENUM+&gt; = [
+  %w{&lt;+内容+&gt; &lt;+内容1+&gt; &lt;+内容2+&gt;}, 
+  %w{1        2         3        }
+]
+</pre>
+<p>在rb文件中输入aen加tab键，看，上面的内容出来了吧，不断按tab可以依次修改&quot;&lt;++&gt;&quot;包含的内容</p>
+<h2>其他</h2>
+<p>当你敲入vim命令进入后，退出vim时不要使用ctrl+z强行终止，这样会产生临时文件</p>
+<p>而应该在normal状态下输入:q回车(:q!回车表示不提示保存直接退出)</p>
+<h2>参考资料</h2>
+<p><a href="http://easwy.com/blog/archives/advanced-vim-skills-catalog/">vim使用进阶</a><br />
+<a href="http://xbeta.info/tag/gvim">善用佳软</a><br />
+<a href="http://blog.vgod.tw/wp-content/uploads/2009/12/vim-cheat-sheet-full.png">vim命令图解</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/vim/2009/10/10/vim.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +160,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 

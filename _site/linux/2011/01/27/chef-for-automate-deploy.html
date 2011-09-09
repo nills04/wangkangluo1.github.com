@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>应用chef构建服务器集群自动化部署与管理 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          <div class='post'>
+  <h1><a href='/linux/2011/01/27/chef-for-automate-deploy.html'>应用chef构建服务器集群自动化部署与管理</a></h1>
+  <span class='date'>2011-01-27</span>
+  <div class='body'><p>为了将rails程序部署到服务器上，需要做的工作有</p>
+<ol>
+	<li>安装服务器各组件，如libcurl等</li>
+	<li>配置服务器，如用户管理、iptable等</li>
+	<li>安装数据库</li>
+	<li>安装缓存服务</li>
+	<li>安装配置前端应用服务器</li>
+	<li>安装rvm</li>
+	<li>安装项目所需gems</li>
+</ol>
+<p>以上工作属于新服务器到位后的一次性工作，而项目更新升级的工作属于不定期重复性工作，大致如下：</p>
+<ol>
+	<li>下载最新源代码</li>
+	<li>运行数据库脚本</li>
+	<li>重新启动应用服务器</li>
+</ol>
+<p>此外，日常工作还包括服务器的监控、维护等</p>
+<p>当项目规模不大，服务器只有一两台时，可以手动或者应用 <a href="https://github.com/capistrano/capistrano">Capistrano</a> 及 <a href="https://github.com/mbailey/deprec">deprec</a> 自动处理</p>
+<h3>capistrano的缺点</h3>
+<p>在应用capify安装某些组件的过程中，如果出现问题，只能进入源代码检查相应的recipe，因为capistrano的recipe相对来说是隐性的<br />
+比如，安装之前，我们不知道mysql的安装会是通过package直接安装还是通过下载source本地编译后安装，也无法获知其版本<br />
+而当recipe不符合你的要求时，需要对其进行改造的成本比较大</p>
+<p>随着项目规模的不断扩大，比如，有了专门的数据库服务器，甚至是数据库服务器集群，这时候capistrano就会显示力不从心了<br />
+我们需要有专业的服务器管理配置工具来统一管理所有的服务器，这类工具不少，这里只介绍chef</p>
+<h2>Chef</h2>
+<h3>Chef是一个什么样的工具</h3>
+<p>想像一下我们现在需要搭建一台mysql database slave服务器，安装过程我们手动操作了<br />
+没过多久，我们需要第二台，这时候我们会想，如果之后安装第一台的时候把操作过程执行的命令写成脚本<br />
+现在安装第二台，运行一下脚本就行了，节约时间而且不容易出错</p>
+<p>chef就相当于这样的一个脚本管理工具，但功能要强大得多，可定制性强<br />
+chef将脚本命令代码化，定制时只需要修改代码，安装的过程就是执行代码的过程</p>
+<p><strong>架构图</strong></p>
+<p><img src="/images/article/chef/chef.png" alt="" /></p>
+<h3>Chef的三种管理模式</h3>
+<p>1. Chef-Solo</p>
+<p>由一台普通电脑控制所有的服务器，不需要专设一台chef-server</p>
+<p>2. Client-Server</p>
+<p>所有的服务器作为chef-client，统一由chef-server进行管理，管理包括安装、配置等工作<br />
+chef-server可以自建，但安装的东西较多，由于使用solr作为全文搜索引擎，还需要安装java</p>
+<p>3. Opscode Platform</p>
+<p>类似于Client-Server，只是Server端不需要自建，而是采用 <a href="http://www.opscode.com">http://www.opscode.com</a> 提供的chef-server服务，本文描述以此方式为主，免费帐号可以管理5个服务器</p>
+<p><img src="/images/article/chef/opscode.png" alt="" /></p>
+<h3>Library程序库</h3>
+<p>程序库是定义的module方法，可以在chef中任何地方被调用，在方法体内可以执行与数据库等资源的交互动作<br />
+详见 <a href="http://wiki.opscode.com/display/chef/Libraries">Libraries</a></p>
+<h3>操作对象</h3>
+<p>chef可以通过recipe指定新建目录、生成配置文件、安装gems等操作，可控性非常强</p>
+<p><strong>新建目录</strong></p>
+<p>新建目录/data，owner为node[:user]指定的内容，权限代码为0755</p>
+<blockquote>
+<p>directory &#8220;/data&#8221; do<br />
+　owner node[:user]<br />
+　mode 0755<br />
+end</p>
+</blockquote>
+<p><strong>生成配置文件</strong></p>
+<p>以someservice.conf.erb为模板，生成/data/someservice.conf配置文件，生成时会传递参数applications给模板</p>
+<blockquote>
+<p>template &#8220;/data/someservice.conf&#8221; do<br />
+　owner node[:user]<br />
+　mode 0644<br />
+　source &#8220;someservice.conf.erb&#8221; <br />
+　variables({<br />
+　　:applications =&gt; node[:apps]<br />
+　})<br />
+end</p>
+</blockquote>
+<h2>把一台新的vps纳入chef管理</h2>
+<p>假设vps ip为188.188.188.188<br />
+ssh密码为123456</p>
+<h3>注册</h3>
+<p>到 <a href="https://cookbooks.opscode.com/users/new">https://cookbooks.opscode.com/users/new</a> 注册帐号<br />
+通过邮件认证后，进入控制台 <a href="https://manage.opscode.com">https://manage.opscode.com</a> 创建organization<br />
+按提示下载两个链接文件至~/Downloads: Download validation key | Generate knife config<br />
+点击右上角的用户名，下载链接文件至~/Download: Get a new private key</p>
+<p>下载后的knife.txt要改名为knife.rb<br />
+<strong>以上三个文件请妥善保管，下载之后opscode平台不再保存这些文件</strong></p>
+<h3>本地安装</h3>
+<pre>
+gem install chef net-ssh-multi --no-ri --no-rdoc
+cd ~/Documents
+git clone git://github.com/opscode/chef-repo.git
+cd chef-repo
+mkdir -p .chef</pre>
+<pre>
+# USERNAME和ORGANIZATION改为实际的文件名称
+cd ~/Downloads
+cp USERNAME.pem ~/Documents/chef-repo/.chef
+cp ORGANIZATION-validator.pem ~/Documents/chef-repo/.chef
+cp knife.rb ~/Documents/chef-repo/.chef</pre>
+<pre>
+#测试连接opscode platform
+knife client list
+#成功连接则显示validator的数组，如
+#[ "shopqi-validator" ]</pre>
+<h3>为vps安装ruby及chef客户端环境</h3>
+<pre>
+knife bootstrap 188.188.188.188 -u root -P 123456
+#ssh登录服务器不再需要输入密码
+ssh root@188.188.188.188 'sh -c "mkdir ~/.ssh"'
+scp ~/.ssh/id_rsa.pub root@188.188.188.188:/root/.ssh/authorized_keys</pre>
+<h3>远程测试是否安装正常</h3>
+<pre>
+ssh root@188.188.188.188
+chef-client
+#如果出现错误，可使用调试模式
+chef-client -l debug</pre>
+<h2>让vps运行第一个cookbook</h2>
+<p>安装完服务器操作系统后，第一件事情就是更新软件<br />
+一般情况下，我们会在服务器上运行命令</p>
+<pre>
+sudo apt-get update</pre>
+<p>现在我们要通过chef来指定vps运行此命令</p>
+<h3>本地安装apt cookbook</h3>
+<pre>
+#此命令最常用，会从opscode官网 "http://cookbooks.opscode.com/":http://cookbooks.opscode.com/ 下载cookbook
+knife cookbook site vendor apt</pre>
+<p>为node加入recipe</p>
+<pre>
+knife node list
+#以上查看node id，假如为201166，现在查看node的run_list
+knife node show 201166 -r
+#加入apt recipe到vps的run list中
+knife node run_list add 201166 "recipe[apt]"
+knife node show 201166 -r
+knife cookbook upload -a</pre>
+<h3>远程登录vps，开始按run_list运行指定recipe</h3>
+<pre>
+ssh root@188.188.188.188
+chef-client
+#每次本地更新后都要在远程运行chef-client比较麻烦，可以使用以下命令，设置为后台程序运行
+chef-client -i 3600 -s 600</pre>
+<h2>安装ruby-on-rails3</h2>
+<h3>下载cookbook</h3>
+<pre>
+#参数-d要求下载依赖的cookbook
+knife cookbook site vendor rvm -d
+#此cookbook调用了chef内置的deploy resource，实现类似于capistrano的部署功能
+#但此cookbook还依赖了java cookbook等，忽略它们即可
+knife cookbook site vendor application -d</pre>
+<h3>新增apps data bag</h3>
+<p>data bag相当于全局变量，application cookcook需要根据apps指定role,recipe等参数</p>
+<pre>
+export EDITOR=vim
+#参考 "https://github.com/opscode/cookbooks/tree/master/application":https://github.com/opscode/cookbooks/tree/master/application 将json粘贴进来
+#退出vim时，data bag会被自动上传至chef server，本地不保存
+knife data bag create apps 55true
+#保存至本地
+mkdir data_bags/apps
+knife data bag show apps 55true &gt; data_bags/apps/55true.json
+knife data bag from file apps 55true.json</pre>
+<h3>新增role rails</h3>
+<pre>
+export EDITOR=vim
+knife role create rails</pre>
+<h3>Tip</h3>
+<p>服务器集群中可能会区分出production, staging环境，也可能同一应用部署在多台服务器中，但只需由其中的一台服务器运行数据库迁徙脚本</p>
+<ol>
+	<li>新增production, staging等role，设置app_environment attribute，分配至相应的node，这样可以重复使用deploy cookbook</li>
+	<li>新增app_name_run_migrations role，设置run_migrations attribute</li>
+</ol>
+<h2>常用cookbook</h2>
+<p>以下列出在 <a href="https://github.com/opscode/cookbooks">https://github.com/opscode/cookbooks</a> 中常用的cookbook</p>
+<h3>apt</h3>
+<p>此recipt会运行apt-get update，用于更新操作系统</p>
+<h3>runit</h3>
+<p>用于保证unicorn等服务时刻处于运行状态<br />
+runsvdir服务会不停地监测/etc/sv目录下的服务目录，每个目录对应一个runsv服务<br />
+如果某个runsv服务出现故障停止了,runsvdir会自动重新启动它</p>
+<pre>
+#sv服务不启动时查看日志
+ps -ef | grep runsvdir
+#查看服务的状态
+sv stat unicorn_server
+#查看服务的日志
+tail -f /etc/sv/unicorn_server/log/main/current</pre>
+<h3>bluepill</h3>
+<p>runit保证了服务的运行，bluepill保证进程的cpu、memory占用率处于正常水平</p>
+<h3>users</h3>
+<p>新增用户，用户定义在users data bag中</p>
+<h3>mongodb</h3>
+<p>安装1.6.5版本的mongo server<br />
+<a href="https://github.com/papercavalier/mongodb-cookbook">https://github.com/papercavalier/mongodb-cookbook</a></p>
+<h3>unicorn</h3>
+<p>经过对比，还是选择37signal的unicorn cookbook，因为支持多app部署，而unicornapp不支持(opscode官方已经删除此cookbook)。为了对unicorn子线程进行监控，两者都使用了bluepill取代God进行监控。<br />
+注意：在production环境下，rails3默认不会处理public目录下静态文件的请求，所以不能像dev环境下直接通过指定端口访问某个unicorn服务</p>
+<h3>application</h3>
+<p><del>这个包含太多的依赖cookbook了，经过以上的实践，还是觉得不用它了，因为里面对rails项目有用的就是deploy部分，自己重写一个也很容易</del></p>
+<h2>注意事项</h2>
+<p>在service或者definition中传递参数时，如果将父params需要级联传递下去，得手动为params赋值至其他变量，因为在service或者definition块中，params参数已经被当前块覆盖了<br />
+详情参考：&quot;http://tickets.opscode.com/browse/<span class="caps">CHEF</span>-422&quot;</p>
+<h2>参考资源</h2>
+<p><a href="http://www.slideshare.net/adamhjk/infrastructure-automation-with-chef" title="Read This First">Infrastructure Automation with Chef</a><br />
+<a href="http://www.themomorohoax.com/2010/07/31/ruby-chef-tutorial">Getting started with Chef tutorial</a><br />
+<a href="http://www.agileweboperations.com/getting-started-with-the-opscode-chef-platform-configuration-management-in-the-cloud">Getting Started With The Opscode Chef Platform – Configuration Management In The Cloud</a><br />
+<a href="http://www.agileweboperations.com/how-to-deploy-ruby-on-rails-with-the-opscode-chef-application-cookbook">How to Deploy Ruby on Rails With The Opscode Chef Application Cookbook</a><br />
+<a href="http://brainspl.at/articles/2009/01/31/cooking-with-chef-101">Cooking with Chef 101</a><br />
+<a href="http://www.slideshare.net/adamhjk/why-startups-need-automated-infrastructures">Why Startups Need Automated Infrastructures</a><br />
+<a href="http://wiki.opscode.com/display/chef/Deploy+Resource">Deploy Resource</a><br />
+<a href="https://github.com/opscode/cookbooks/tree/master/application">application cookbook</a></p>
+<p><a href="http://smarden.org/runit/">runit</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/linux/2011/01/27/chef-for-automate-deploy.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>iphone开发 | 好东西，肯定是简单的 - wangkangluo1</title>
+    
+    <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+    <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
+  </head>
+  <body>
+    <div id="wrapper"><!-- #wrapper -->
+
+      <header><!-- header -->
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
+      </header><!-- end of header -->
+
+      <nav><!-- top nav -->
+      <div class="menu">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <li><a href="/blogs.html">文章列表</a></li>
+          <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
+          <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
+          <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
+          <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
+          <li><a href="https://github.com/wangkangluo1">Github</a></li>
+          <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
+
+
+      </nav><!-- end of top nav -->
+
+      <section id="main"><!-- #main content and sidebar area -->
+      <div id="content">
+        <article class="articlecontent">
+          <div class='post'>
+  <h1><a href='/iphone/2010/02/24/iphone-development.html'>iphone开发</a></h1>
+  <span class='date'>2010-02-24</span>
+  <div class='body'><h2>开发目标</h2>
+<p>尝试在mac开发iphone应用，在暂时没拿到apple license前使用(linux)ToolChain编译到越狱后的iphone上测试<br />
+实践结果表示，ToolChain可以稳定的部署至已越狱的iphone上，如果报错(某个实例无法响应某方法)，一般是由于编译时未包含所有的m文件(OBJS变量未包含所有m文件所在目录)</p>
+<h2>搭建开发环境</h2>
+<p>官方SDK开发出的软件需要由苹果进行认证后才能在iphone上安装，费用为99美元，并可在AppStore上销售，苹果提成30%，且开发环境只能在苹果机上搭建<br />
+非官方SDK无须认证，不用交费，开发环境可在任何操作系统进行，缺点是开发过程较为烦琐</p>
+<p>支持3.1<br />
+<a href="http://code.google.com/p/iphonedevonlinux/wiki/Installation">iphonedevonlinux</a></p>
+<p><del>支持2.2</del><br />
+<del><a href="http://pimpmiphone.info/howto/install-open-toolchain-on-ubuntu.html">install-open-toolchain-on-ubuntu</a></del><br />
+<del>iptc.sh报错，修改appIdKey，增加</del>-no-check-certificate参数后的版本-<br />
+<del><a href="http://gist.github.com/raw/314175/422ce51bfad557af9ea55a45e3acf3451edfa46a/iptc.sh">iptc.sh</a></del></p>
+<p><del>使用iptc.sh可以不看以下内容</del><br />
+<del><a href="http://code.google.com/p/iphone-dev/wiki/Building">安装toolchain非官方SDK</a></del></p>
+<h2>Mac机上的iphone开发</h2>
+<p>注意：模拟器上不支持摄相头，只能通过程序自动判断在模拟器上使用照片浏览，而在iphone上使用camera</p>
+<p><del><a href="http://developer.apple.com/iphone/library/documentation/DataManagement/Conceptual/iPhoneCoreData01/Introduction/Introduction.html">应用CoreData持久化数据的例子</a></del><br />
+不使用CoreData，改用SqlitePersistentObjects，见常用框架</p>
+<p><a href="http://developer.apple.com/iphone/library/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/AdvancedFeatures/AdvancedFeatures.html#//apple_ref/doc/uid/TP40007072-CH14-SW13">调用摄像头照相的例子</a><br />
+<a href="http://developer.apple.com/iphone/library/documentation/Xcode/Conceptual/iphone_development/200-iPhone_Development_FAQ/faq.html">iphone simulator不支持camera</a></p>
+<h2>问题</h2>
+<h3>ToolChain编译时找不到Foundation/Foundation.h中的类，如NSData</h3>
+<p>需要在每个报错的source文件中手动加入</p>
+<pre>
+#import &lt;Foundation/Foundation.h&gt;
+</pre>
+<p>后来发现原来是没有引入Prefix.pch预编译头文件<br />
+在编译时加入以下参数，问题解决</p>
+<pre>
+CFLAGS += -include ./*_Prefix.pch
+CFLAGS += -x objective-c-header
+</pre>
+<h3>如何在编译时引入libsqlite.3.0.dylib</h3>
+<pre>
+#LDFLAGS中加入参数
+-lsqlite3.0
+</pre>
+<h3>ToolChain编译时找不到项目中依赖的h文件</h3>
+<p>暂时没能找到自动查找所有递归子目录的方法，笨拙的办法是在编译时手工加上-Idir参数</p>
+<pre>
+CFLAGS += -I./Classes/ObjectiveResource
+CFLAGS += -I./Classes/SQLPO/
+#有多少子目录就加多少个-I参数
+</pre>
+<h3>ToolChain在链接成可执行文件时报错</h3>
+<pre>
+Undefined symbols:
+  "_main", referenced from:
+        __start in crt1.o
+ld: symbol(s) not found
+collect2: ld returned 1 exit status
+make: *** [HelloToolChain] Error 1
+</pre>
+<p>提示内容是，在编译后的o文件中找不到main方法</p>
+<p>经过多次尝试，发现是由于编译main.m时带上了参数</p>
+<pre>
+CFLAGS += -include ./*_Prefix.pch
+CFLAGS += -x objective-c-header
+</pre>
+<p>针对main.m编译时去掉这两个参数后再进行链接就ok了</p>
+<p>为了由MakeFile自动处理main.m的编译，可以加入以下make target，即加入CFLAGS参数</p>
+<pre>
+main.o: main.m
+  $(CC) -c $&lt; -o $@
+</pre>
+<h3>如何处理plist文件中的变量($(PRODUCT_NAME)等)</h3>
+<pre>
+#使用sed替换
+cat $(PROJECTNAME)-Info.plist | sed 's/$${PRODUCT_NAME.*}/$(PROJECTNAME)/' | sed 's/$${EXECUTABLE_NAME}/$(PROJECTNAME)/' &gt;  $(BUILDDIR)/$(APPFOLDER)/Info.plist
+</pre>
+<h3>ssh上传文件至iphone后无法显示图标</h3>
+<p>这个问题比较奇怪，删除iphone.app目录，再kill SpringBoard后会显示出来</p>
+<h3>在iphone上运行直接跳出</h3>
+<p>ssh到iphone的应用目录，直接使用./iphone_运行，报以下错误</p>
+<pre>
+2010-03-24 17:04:00.023 iphone_[1281:903] *** Assertion failure in UIApplicationMain(), /SourceCache/UIKit/UIKit-984.38/UIApplication.m:1069
+2010-03-24 17:04:00.038 iphone_[1281:903] *** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'Unable to instantiate the UIApplication delegate instance. No class named iphoneAppDelegate is loaded.'
+2010-03-24 17:04:00.063 iphone_[1281:903] Stack: (
+  853417245,
+  845594132,
+  852966195,
+  872039017,
+  817832324,
+  8872,
+  8572,
+  8216
+)
+terminate called after throwing an instance of 'NSException'
+Abort trap
+</pre>
+<p>第一个原因是MakeFile中的OBJS没有加入Classes目录下的.m文件，补上以下内容问题解决:</p>
+<pre>
+OBJS+=$(patsubst %.m,%.o,$(wildcard $(SRCDIR)/*.m))
+</pre>
+<p>还是报相同的错，在注释以下语句后问题解决</p>
+<pre>
+#CFLAGS += -x objective-c-header
+</pre>
+<h2>debug iphone</h2>
+<p>将应用部署至iphone真机后，出问题时只能通过日志记录的方法进行调试了<br />
+方法是打开syslogd守护进程，将NSLog的内容重定向至系统日志中</p>
+<h2>常用开源框架</h2>
+<p><a href="http://code.google.com/p/sqlitepersistentobjects/" title="activerecord">sqlitepersistentobjects</a><br />
+<a href="http://iphoneonrails.com/" title="activeresource">object resource</a></p>
+<p><a href="http://www.cocos2d-iphone.org">cocos2d</a><br />
+cocos2d是开发游戏必备框架，支持物理引擎，碰撞检测</p>
+<p><a href="http://code.google.com/p/json-framework/" title="已包含进object resource">json framework</a><br />
+如需支持上传照片，需要将照片编码为base64字符后使用json上传，具体代码如下<br />
+<pre><br />
+NSData <strong>photoData = UIImagePNGRepresentation(fragment);<br />
+NSString</strong> photoString = [photoData base64Encoding];<br />
+</pre></p>
+<h2>iTunes Connect</h2>
+<p>注意上传binary时要保证Icon.png的大小为57X57pixel<br />
+使用xcode编译时要选择Device Distribution编译,使用模拟器编译上传时会提示签名无效</p>
+<h2>制作iphone app site</h2>
+<p>在heroku中新增app<br />
+加入Custom Domains指定域名,使用Zerigo DNS作为域名解释服务器(即godaddy中的nameserver指向zerigo)<br />
+<a href="http://www.progressivered.com/cu3er/">应用cu3er制作幻灯片</a></p>
+<h2>参考资源</h2>
+<p><a href="http://www.yifeiyang.net/category/embedded/iphone-embedded/">易飞扬博客</a><br />
+<a href="http://www.iphonedevfaq.com/index.php?title=Main_Page">iphone faq</a><br />
+<a href="http://www.fosk.it/how-to-enable-syslog-on-iphone-fw-2x-for-debugging.html">How to enable Syslog on iPhone fw 2.x for debugging</a><br />
+<a href="http://www.joyiphone.net/MySpace/Icon/PhotoUpload.aspx">iphone圆角图标制作</a><br />
+<a href="http://www.curioustimes.de/iphonesimulatorcropper/">iPhone Simulator Cropper</a><br />
+<a href="http://www.jaml.co.uk/simcap.html" title="截图推荐,支持ipad">SimCap</a><br />
+<a href="http://iphoneincubator.com/blog/debugging/how-to-create-conditional-log-statements-in-xcode">how to create debug flag</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/iphone/2010/02/24/iphone-development.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+        </article>
+      </div>
+
+      <aside>
+      <section>
+      <img src="/images/wangkangluo1.jpg"/>
+      <p><a href="javascript:void(0)">wangkangluo1@gmail.com</a></p>
+      <p><a href="javascript:void(0)">phone:15021583950</a></p>
+      <p><a href="javascript:void(0)">qq:304243050</a></p>
+      </section>
+
+
+      <section>
+      <h3>Categories</h3>
+      <ul>
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
+      </ul>
+      </section>
+
+
+      <section>
+      <div id="github-badge">
+      </div>
+      </section>
+
+      <script type="text/javascript" charset="utf-8">
+      GITHUB_USERNAME = "wangkangluo1";
+      </script>
+      <script src="http://drnicjavascript.rubyforge.org/github_badge/dist/github-badge-launcher.js" type="text/javascript"></script>
+
+      <section>
+      <!-- Feedsky FEED发布代码开始 -->
+      <!-- FEED自动发现标记开始 -->
+      <link title="RSS 2.0" type="application/rss+xml" href="http://feed.feedsky.com/saberma" rel="alternate" />
+      <!-- FEED自动发现标记结束 -->
+      <a href="http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_sub_c1s17_d.gif" alt="feedsky" vspace="2"  style="margin-bottom:3px" ></a><br />
+      <a href="http://www.zhuaxia.com/add_channel.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_zhuaxia.gif" alt="&#25235;&#34430;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.rojo.com/add-subscription?resource=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_rojo.gif" alt="Rojo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://fusion.google.com/add?feedurl=http://feed.feedswangkangluo1saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_google.gif" alt="google reader" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://add.my.yahoo.com/rss?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_yahoo.gif" alt="my yahoo" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://www.xianguo.com/subscribe.php?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_xianguo.gif" alt="&#40092;&#26524;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <a href="http://9.douban.com/reader/subscribe?url=http://feed.feedsky.com/saberma"><img border="0" src="http://img.feedsky.com/images/icon_subshot01_douban.gif" alt="&#20061;&#28857;" vspace="2" style="margin-bottom:3px" ></a><br />
+      <!-- Feedsky FEED发布代码结束 -->
+      </section>
+
+
+      </aside>
+
+      </section><!-- end of #main content and sidebar-->
+
+      <footer>
+      <section id="footer-area">
+
+      <section id="footer-outer-block">
+      <aside class="footer-segment">
+      <h4>News</h4>
+      <ul>
+          <li><a href="http://solidot.org/">奇客</a></li>
+          <li><a href="http://linuxtoy.org/">Linuxtoy</a></li>
+          <li><a href="http://www.36kr.com/">36氪</a></li>
+        <li><a href="http://www.inside.com.tw/" target="_blank">Inside</a></li>
+      </ul>
+      </aside><!-- end of #first footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Blogroll</h4>
+      <ul>
+        <li><a href="http://www.geekpark.net/">极客公园</a></li>
+        <li><a href="http://mrjamie.cc/">Mr.Jamie</a></li>
+        <li><a href="http://www.laogeng.org/">老耿</a></li>
+        <li><a href="http://www.ruanyifeng.com/blog/">阮一峰</a></li>
+      </ul>
+      </aside><!-- end of #second footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Useful</h4>
+      <ul>
+        <li><a href="http://xianguo.com">鲜果</a></li>
+        <li><a href="http://club.topsage.com/">大家论坛</a></li>
+        <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
+      </ul>
+      </aside><!-- end of #third footer segment -->
+
+      <aside class="footer-segment">
+      <h4>Encourage</h4>
+      <br>
+      <p>先求运行,再求正确,最后求快</p>
+      <p>拿不定主意的时候,先抄别人的</p>
+      </aside><!-- end of #fourth footer segment -->
+
+      </section><!-- end of footer-outer-block -->
+
+      </section><!-- end of footer-area -->
+      </footer>
+
+    </div><!-- #wrapper -->
+    <a href="http://github.com/wangkangluo1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://assets2.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf?repo=&url=http%3A%2F%2Fs3.amazonaws.com%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
+
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>

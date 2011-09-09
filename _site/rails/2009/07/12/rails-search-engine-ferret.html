@@ -1,16 +1,10 @@
----
-author: wangkangluo1
-desc: 好东西，肯定是简单的
----
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {% if page.title != null %}
-    <title>{{page.title}} | {{ page.desc }} - {{ page.author }}</title>
-    {% else %}
-    <title>{{ page.desc }} - {{ page.author }}</title>
-    {% endif %}
+    
+    <title>全文检索Ferret | 好东西，肯定是简单的 - wangkangluo1</title>
+    
     <link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
@@ -21,8 +15,8 @@ desc: 好东西，肯定是简单的
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
-      <h1><a href="/">{{ page.author }}'s blog</a></h1>
-      <h2><a href="/">{{ page.desc }}</a></h2>
+      <h1><a href="/">wangkangluo1's blog</a></h1>
+      <h2><a href="/">好东西，肯定是简单的</a></h2>
       </header><!-- end of header -->
 
       <nav><!-- top nav -->
@@ -45,7 +39,88 @@ desc: 好东西，肯定是简单的
       <section id="main"><!-- #main content and sidebar area -->
       <div id="content">
         <article class="articlecontent">
-          {{ content }}
+          <div class='post'>
+  <h1><a href='/rails/2009/07/12/rails-search-engine-ferret.html'>全文检索Ferret</a></h1>
+  <span class='date'>2009-07-12</span>
+  <div class='body'><h1>全文检索(Ferret)</h1>
+<p>由于sphinx只能支持mysql数据库，所以只能采用其他全文检索方案了<br />
+(sphinx新版本0.9.9rc2是支持odbc连接oracle的，但coreseek的中文分词补丁只支持0.9.9rc1，而且thinking-sphinx也不支持oracle-adapter)</p>
+<ul>
+	<li>全文检索引擎采用:ferret</li>
+	<li>中文分词:rmmseg</li>
+	<li>Rails调用引擎的插件:act_as_ferret</li>
+</ul>
+<h1>项目下安装</h1>
+<pre>
+#安装gem 
+sudo gem install ferret acts_as_ferret rmmseg --no-ri --no-rdoc
+#成功运行上面命令之后，接下来的内容可以不用操作了
+</pre>
+<h1>安装详细过程</h1>
+<pre>
+#测试
+echo "敏捷开发流程" | rmmseg
+#修改environment.rb
+#在enviroment.rb中插入
+config.gem 'acts_as_ferret'
+config_gem 'rmmseg'
+require 'rmmseg/ferret'
+#生成ferret_server运行脚本
+aaf_install
+#运行生产环境下的ferret服务器，避免多线程同步访问索引的问题
+script/ferret_server start --root=. -e production
+</pre>
+<h1>使用</h1>
+<pre>
+#进入控制台
+script/console
+#查询
+Conversation.find_with_ferret '26741022'
+#通过fixture加载数据不会被索引，因此，加载后应重建索引
+Conversation.rebuild_index
+#与查询
+Conversation.find_with_ferret '26741022 深圳'
+#或查询(OR大写)
+Conversation.find_with_ferret '26741022 OR 深圳'
+</pre>
+<h1>其他</h1>
+<pre>
+#查看日志
+tail -f log/acts_as_ferret.log
+#查看索引(目录test可以替换为其他环境,如development)
+ferret-browser index/test/conversation/
+#然后在浏览器中访问http://localhost:3301
+</pre>
+<h1>参考资料</h1>
+<p><a href="http://wtb.javaeye.com/blog/185419">ferret+acts_as_ferret+RMMSeg全文索引+中文分词的使用</a><br />
+<a href="http://rmmseg.rubyforge.org/">rmmseg homepage</a><br />
+<a href="http://hi.baidu.com/%D0%C7203/blog/item/1ab899887805d197a5c2725f.html">acts_as_ferret中文教程[Rails全文检索插件]</a></p></div>
+</div>
+<script type="text/javascript" charset="utf-8">
+  var disqus_url = "http://wangkangle.com/rails/2009/07/12/rails-search-engine-ferret.html";
+  var disqus_developer = 1;
+</script>
+
+<div id="disqus_thread"></div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'wangkanglesblog'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                    (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                                })();
+                                            </script>
+                                            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                            <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
         </article>
       </div>
 
@@ -61,9 +136,25 @@ desc: 好东西，肯定是简单的
       <section>
       <h3>Categories</h3>
       <ul>
-        {% for category in site.categories %}
-        <li><a href="/{{category | first}}.html">{{category | first}} ({{category | last | size }})</a></li>
-        {% endfor %}
+        
+        <li><a href="/rails.html">rails (20)</a></li>
+        
+        <li><a href="/agile.html">agile (1)</a></li>
+        
+        <li><a href="/git.html">git (3)</a></li>
+        
+        <li><a href="/jquery.html">jquery (1)</a></li>
+        
+        <li><a href="/vim.html">vim (1)</a></li>
+        
+        <li><a href="/linux.html">linux (5)</a></li>
+        
+        <li><a href="/other.html">other (4)</a></li>
+        
+        <li><a href="/iphone.html">iphone (2)</a></li>
+        
+        <li><a href="/php.html">php (1)</a></li>
+        
       </ul>
       </section>
 
