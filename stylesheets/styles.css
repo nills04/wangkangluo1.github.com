@@ -34,7 +34,9 @@ nav {
 width: 940px;
 height: 30px;
 margin: 0 auto;
-background: #9CCB47;
+/*background: #9CCB47;*/
+background-color: #151515;
+
 }
 
 header {
