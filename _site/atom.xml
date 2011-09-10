@@ -3,7 +3,7 @@
   <title>saberma的博客</title>
   <link href="http://saberma.me/atom.xml" rel="self"/>
   <link href="http://saberma.me/"/>
-  <updated>2011-09-10T16:51:28+08:00</updated>
+  <updated>2011-09-10T17:01:40+08:00</updated>
   <id>http://saberma.me/</id>
   <author>
     <name>saberma</name>
@@ -919,6 +919,21 @@ ff02::3 ip6-allhosts&lt;br /&gt;
 125.56.199.9 photos-g.ak.fbcdn.net&lt;br /&gt;
 125.56.199.9 photos-h.ak.fbcdn.net&lt;/li&gt;
 &lt;/ol&gt;</content>
+    </entry>
+  
+    <entry>
+      <title>Git 恢复删除文件</title>
+      <link href="http://saberma.me/git/2011/09/10/git-recover-files.html"/>
+      <updated>2011-09-10T00:00:00+08:00</updated>
+      <id>http://saberma.me/git/2011/09/10/git-recover-files</id>
+      <content type="html">&lt;p&gt;git 恢复删除文件&lt;br /&gt;
+2010-04-21 02:13&lt;br /&gt;
+git 从使用的角度来说，的确没有svn方便&lt;br /&gt;
+svn直接update即可恢复，但git pull却显示already up-to-date&lt;br /&gt;
+要查看删除的文件： git ls-files –deleted&lt;/p&gt;
+&lt;p&gt;恢复则需要从新checkout： git checkout – &lt;deleted_file&gt;&lt;/p&gt;
+&lt;p&gt;多个文件同时操作可以使用xargs&lt;br /&gt;
+git ls-fies &lt;del&gt;d | xargs git checkout -&lt;/del&gt;&lt;/p&gt;</content>
     </entry>
   
     <entry>

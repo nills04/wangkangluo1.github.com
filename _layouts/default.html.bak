@@ -1,6 +1,6 @@
----
+i---
 author: wangkangluo1
-desc: 好东西，肯定是简单的
+desc: Good things, certainly a simple
 ---
 <!doctype html>
 <html lang="en">
@@ -15,14 +15,6 @@ desc: 好东西，肯定是简单的
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
-
-    <!--
-    <script src="js/jquery.min.js" language="javascript" type="text/javascript">
-    </script>
-     <script src="js/index.js" language="javascript" type="text/javascript">
-     </script>-->
-     
-           
     <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
   </head>
   <body>
@@ -38,17 +30,16 @@ desc: 好东西，肯定是简单的
         <ul>
           <li><a href="/">首页</a></li>
           <li><a href="/blogs.html">文章列表</a></li>
-          <!--<li><a href="/about.html">关于我</a></li>-->
           <li><a href="/linux/2011/02/24/my-ubuntu.html">我的Ubuntu</a></li>
           <li><a href="/linux/2011/03/03/vagrant-virtual-develop-enviroment.html">虚拟化开发环境</a></li>
           <li><a href="/git/2010/10/25/git-flow.html">版本控制标准流程</a></li>
           <li><a href="http://www.cnblogs.com/wangkangluo1/admin/EditPosts.aspx">博客园</a></li>
           <li><a href="https://github.com/wangkangluo1">Github</a></li>
           <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
+      </ul>
+</div>
 
 
-        </ul>
-      </div>
       </nav><!-- end of top nav -->
 
       <section id="main"><!-- #main content and sidebar area -->
@@ -137,7 +128,7 @@ desc: 好东西，肯定是简单的
         <li><a href="http://xianguo.com">鲜果</a></li>
         <li><a href="http://club.topsage.com/">大家论坛</a></li>
         <li><a href="http://www.templatemonster.com/">怪兽模板</a></li>
-        <li><a href="http://chinaonrails.com">ChinaOnRails</a></li>
+        <li><a href="http://www.noupe.com/tutorial/drop-down-menu-jquery-css.html">css3</a></li>
       </ul>
       </aside><!-- end of #third footer segment -->
 
@@ -169,3 +160,4 @@ desc: 好东西，肯定是简单的
     <!-- Free template created by http://freehtml5templates.com -->
   </body>
 </html>
+

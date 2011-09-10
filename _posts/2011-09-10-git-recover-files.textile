@@ -1,0 +1,16 @@
+---                                                                                                                                                                              
+layout: post
+title: Git 恢复删除文件
+category: git
+---
+
+git 恢复删除文件
+2010-04-21 02:13
+git 从使用的角度来说，的确没有svn方便
+svn直接update即可恢复，但git pull却显示already up-to-date
+要查看删除的文件： git ls-files –deleted
+
+恢复则需要从新checkout： git checkout – <deleted_file>
+
+多个文件同时操作可以使用xargs
+git ls-fies -d | xargs git checkout --
