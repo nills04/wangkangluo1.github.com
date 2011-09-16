@@ -1,4 +1,4 @@
-i---
+---
 author: wangkangluo1
 desc: Good things, certainly a simple
 ---
@@ -15,9 +15,12 @@ desc: Good things, certainly a simple
     <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" media="screen" charset="utf-8"/>
     <link rel="stylesheet" href="/stylesheets/print.css" type="text/css" media="print" charset="utf-8"/>
+
+
     <!--[if IE]><script src="/javascripts/html5.js"></script><![endif]-->
   </head>
   <body>
+
     <div id="wrapper"><!-- #wrapper -->
 
       <header><!-- header -->
@@ -37,6 +40,7 @@ desc: Good things, certainly a simple
           <li><a href="https://github.com/wangkangluo1">Github</a></li>
           <li><a href="http://u.115.com/?ct=index&ac=my#ct=frame">115</a></li>
       </ul>
+
 </div>
 
 
@@ -160,4 +164,24 @@ desc: Good things, certainly a simple
     <!-- Free template created by http://freehtml5templates.com -->
   </body>
 </html>
+m%2Fgithub%2Fribbons%2Fforkme_right_red_aa0000.png&path=" alt="Fork me on GitHub"></a>
 
+    <script>
+      var _gaq = [['_setAccount', 'UA-12120506-1'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+        g.async = true;
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      })(document, 'script');
+    </script>
+    <!-- Free template created by http://freehtml5templates.com -->
+  </body>
+</html>
+
+  </body>
+</html>
+p://freehtml5templates.com -->
+  </body>
+</html>
