@@ -1490,55 +1490,7 @@ IO slots:FF=全高，全长的扩展卡;FH=全高，半长的扩展卡;LP=矮板
 &lt;p&gt;&lt;a href=&quot;http://www.ittong.net/News_37191.html&quot;&gt;DIY服务器机箱组装经验谈&lt;/a&gt;&lt;/p&gt;</content>
     </entry>
   
-    <entry>
-      <title>如何为https网站加入ssl证书</title>
-      <link href="http://saberma.me/other/2011/08/11/how-to-choose-ssl-certificates.html"/>
-      <updated>2011-08-11T00:00:00+08:00</updated>
-      <id>http://saberma.me/other/2011/08/11/how-to-choose-ssl-certificates</id>
-      <content type="html">&lt;p&gt;要提高网站与客户端浏览器之间的安全性，可以基于https协议对传输的数据进行加密&lt;br /&gt;
-https协议采用公钥私钥加密算法进行加密，服务器用私钥对网页进行加密后，连同公钥一起发给浏览器&lt;br /&gt;
-由于，公钥是服务器发送的，浏览器认为它不可信任，就会提示用户选择是否进一步操作&lt;br /&gt;
-这对用户来说非常不友好，觉得这个网站不安全&lt;/p&gt;
-&lt;p&gt;为了解决这个问题，我们需要将公钥制作成数字证书，放到专门的认证机构(ca)&lt;/p&gt;
-&lt;p&gt;认证机构有很多家，比如&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;&lt;a href=&quot;http://www.geotrust.com&quot;&gt;http://www.geotrust.com&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;http://www.verisign.com&quot;&gt;http://www.verisign.com&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;http://www.rapidssl.com&quot;&gt;http://www.rapidssl.com&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;这些都是收费的，免费的只有一家 &lt;a href=&quot;http://www.startssl.com&quot;&gt;http://www.startssl.com&lt;/a&gt; ，但是firefox3.5不支持，所以不考虑&lt;/p&gt;
-&lt;p&gt;不了解的同学可以看下 &lt;a href=&quot;http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html&quot;&gt;数字签名是什么&lt;/a&gt;&lt;/p&gt;
-&lt;h2&gt;认证类型&lt;/h2&gt;
-&lt;p&gt;各个认证机构提供的类型也有很多不一样，按认证范围可以分为&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;域名型，针对域名进行认证(快速认证)&lt;/li&gt;
-	&lt;li&gt;企业型，同时认证公司名称等信息(完整认证)&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;据说rapidssl不支持企业认证&lt;/p&gt;
-&lt;p&gt;按认证的域名可以分为&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;单域名 www.example.com&lt;/li&gt;
-	&lt;li&gt;多域名 www.example1.com, www.example2.com&lt;/li&gt;
-	&lt;li&gt;泛二级域名 *.exmaple.com&lt;/li&gt;
-	&lt;li&gt;多个二级域名 a.example.com, b.example.com&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;此外还有赔付保障(证书被破解找机构赔)、移动设备支持情况、木马扫瞄等功能类型的差异，没什么用&lt;/p&gt;
-&lt;p&gt;在这里我们主要关注泛二级域名，报价(元/每年)&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;rapidssl 1550&lt;/li&gt;
-	&lt;li&gt;GeoTrust 6850&lt;/li&gt;
-	&lt;li&gt;VeriSign 38000&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;以上报价由&amp;quot;www.trustasia.com&amp;quot;:www.trustasia.com 提供&lt;br /&gt;
-GeoTrust,VeriSign只能是企业级认证的产品才包含泛二级域名类型，所以价格贵很多&lt;/p&gt;
-&lt;p&gt;rapidssl符合要求，价格较低，还有优惠&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;&lt;a href=&quot;http://www.clickssl.com/rapidssl/rapidsslwildcard.aspx&quot;&gt;clickssl 139$&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;https://www.servertastic.com/rapidssl/&quot;&gt;servertastic 139$&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;http://www.cheapssls.com/geotrust-ssl-certificates/rapidssl-wildcard.html&quot;&gt;cheapssls 148$&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content>
-    </entry>
-  
+   
     <entry>
       <title>虚拟化开发环境</title>
       <link href="http://saberma.me/linux/2011/03/03/vagrant-virtual-develop-enviroment.html"/>
